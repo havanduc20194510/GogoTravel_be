@@ -12,15 +12,12 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
-public class Place {
+@AllArgsConstructor
+public class TourType {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long placeId;
+    private Long id;
     private String name;
-    private String time;
     private String description;
-    private Long provinceCode;
-    private String provinceName;
 }

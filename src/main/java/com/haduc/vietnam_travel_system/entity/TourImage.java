@@ -11,12 +11,12 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class PlaceImage {
+public class TourImage {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "placeId")
-    private Place place;
+    @JoinColumn(name = "tourId")
+    private Tour tour;
     private String url;
 }
