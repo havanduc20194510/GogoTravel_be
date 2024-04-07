@@ -1,23 +1,17 @@
-package com.haduc.vietnam_travel_system.entity;
+package com.haduc.vietnam_travel_system.dto.request;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Builder;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import java.util.Date;
 
-@Entity
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Tour {
-    @Id
+@Builder
+public class CreateTourRequest {
     private String tourId;
     private String name;
     private Double price;
@@ -34,11 +28,8 @@ public class Tour {
     private Double hotelStar;
     private Long numberOfSeats;
     private Long availableSeats;
-    private Double rating;
     private String status;
     private String image;
     private String note;
-    @OneToOne
-    @JoinColumn(name = "tourTypeId")
-    private TourType tourType;
+    private Long tourTypeId;
 }
