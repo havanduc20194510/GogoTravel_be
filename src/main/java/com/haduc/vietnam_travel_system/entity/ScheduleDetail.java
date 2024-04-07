@@ -19,7 +19,8 @@ public class ScheduleDetail {
     @JoinColumn(name = "tourScheduleId")
     private TourSchedule tourSchedule;
     private String timeLine;
-    private String content;
+    private String place;
+    private String description;
     private String image;
     @OneToOne(mappedBy = "scheduleDetail")
     private Task task;

@@ -34,6 +34,8 @@ public class Tour {
     private Double hotelStar;
     private Long numberOfSeats;
     private Long availableSeats;
+    private Double rating;
+    private String status;
     private String image;
     @OneToOne
     @JoinColumn(name = "tourTypeId")
