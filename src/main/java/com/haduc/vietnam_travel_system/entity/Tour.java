@@ -1,15 +1,12 @@
 package com.haduc.vietnam_travel_system.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 @Entity
 @Getter
@@ -18,6 +15,7 @@ import java.util.Date;
 @AllArgsConstructor
 public class Tour {
     @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     private String tourId;
     private String name;
     private Double price;
@@ -27,8 +25,8 @@ public class Tour {
     private String description;
     private Long numberOfDays;
     private Long numberOfNights;
-    private Date startDate;
-    private Date endDate;
+    private LocalDate startDate;
+    private LocalDate endDate;
     private String vehicle;
     private String departure;
     private Double hotelStar;
