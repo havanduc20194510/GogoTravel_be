@@ -4,6 +4,7 @@ import com.haduc.vietnam_travel_system.dto.request.CreateUserRequest;
 import com.haduc.vietnam_travel_system.dto.request.UpdateUserRequest;
 import com.haduc.vietnam_travel_system.entity.User;
 import com.haduc.vietnam_travel_system.service.UserService;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,7 +17,7 @@ public class UserController {
     private UserService userService;
 
     @PostMapping
-    User createUser(@RequestBody CreateUserRequest request){
+    User createUser(@RequestBody @Valid CreateUserRequest request){
         return userService.createUser(request);
     }
 
