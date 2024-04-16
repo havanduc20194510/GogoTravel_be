@@ -3,6 +3,8 @@ package com.haduc.go_travel_system.service.impl;
 import com.haduc.go_travel_system.dto.request.CreateUserRequest;
 import com.haduc.go_travel_system.dto.request.UpdateUserRequest;
 import com.haduc.go_travel_system.entity.User;
+import com.haduc.go_travel_system.enums.ErrorCode;
+import com.haduc.go_travel_system.exception.AppException;
 import com.haduc.go_travel_system.repository.UserRepository;
 import com.haduc.go_travel_system.service.UserService;
 import lombok.AllArgsConstructor;
@@ -18,7 +20,7 @@ public class UserServiceImpl implements UserService {
     public User createUser(CreateUserRequest request) {
         User user = new User();
         if(userRepository.existsByUsername(request.getUsername())){
-            throw new RuntimeException("Username already exists");
+            throw new AppException(ErrorCode.USER_EXISTED);
         }
         user.setUsername(request.getUsername());
         user.setPassword(request.getPassword());
