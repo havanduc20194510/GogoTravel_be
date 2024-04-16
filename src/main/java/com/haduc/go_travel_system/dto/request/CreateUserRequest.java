@@ -12,9 +12,9 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CreateUserRequest {
-    @Size(min = 6, message = "Username must be at least 6 characters")
+    @Size(min = 4, message = "USERNAME_INVALID")
     private String username;
-    @Size(min = 6, message = "Password must be at least 6 characters")
+    @Size(min = 6, message = "PASSWORD_INVALID")
     private String password;
     @Email(message = "Email must be valid")
     private String email;
