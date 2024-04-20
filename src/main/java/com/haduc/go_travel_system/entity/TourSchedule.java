@@ -1,16 +1,16 @@
 package com.haduc.go_travel_system.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+
+import java.util.List;
 
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class TourSchedule {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,4 +20,7 @@ public class TourSchedule {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "tourId")
     private Tour tour;
+
+    @OneToMany(mappedBy = "tourSchedule")
+    private List<ScheduleDetail> scheduleDetail;
 }

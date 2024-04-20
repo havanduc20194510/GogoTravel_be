@@ -14,7 +14,7 @@ import java.util.Map;
 
 @Service
 @AllArgsConstructor
-public class CloudServiceImpl implements CloudinaryService{
+public class CloudinaryServiceImpl implements CloudinaryService{
     private Cloudinary cloudinary;
     @Override
     public Map uploadImage(MultipartFile file) throws IOException {
