@@ -21,7 +21,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
         )
 )
 public class GoTravelSystemApplication {
-
     public static void main(String[] args) {
         SpringApplication.run(GoTravelSystemApplication.class, args);
     }

@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 @Data
@@ -12,24 +13,22 @@ import java.util.Date;
 @AllArgsConstructor
 @Builder
 public class CreateTourRequest {
-    private String tourId;
     private String name;
-    private Double price;
     private Double adultPrice;
     private Double childPrice;
+    private Double babyPrice;
     private String unit;
     private String description;
     private Long numberOfDays;
     private Long numberOfNights;
-    private Date startDate;
-    private Date endDate;
+    private LocalDate startDate;
+    private LocalDate endDate;
     private String vehicle;
     private String departure;
     private Double hotelStar;
     private Long numberOfSeats;
     private Long availableSeats;
     private String status;
-    private String image;
     private String note;
     private Long tourTypeId;
 }

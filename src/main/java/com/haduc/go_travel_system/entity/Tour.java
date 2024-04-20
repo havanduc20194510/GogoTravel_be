@@ -1,5 +1,6 @@
 package com.haduc.go_travel_system.entity;
 
+import com.haduc.go_travel_system.enums.TourStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -7,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Entity
 @Getter
@@ -18,7 +20,7 @@ public class Tour {
     @GeneratedValue(strategy = GenerationType.UUID)
     private String tourId;
     private String name;
-    private Double price;
+    private Double babyPrice;
     private Double adultPrice;
     private Double childPrice;
     private String unit;
@@ -33,10 +35,15 @@ public class Tour {
     private Long numberOfSeats;
     private Long availableSeats;
     private Double rating;
-    private String status;
-    private String image;
+    @Enumerated(EnumType.STRING)
+    private TourStatus status;
     private String note;
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "tourTypeId")
     private TourType tourType;
+    @OneToMany(mappedBy = "tour")
+    private List<TourImage> images;
+    @OneToMany(mappedBy = "tour")
+
+    private List<TourSchedule> schedules;
 }
