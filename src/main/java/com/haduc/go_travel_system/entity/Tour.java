@@ -27,10 +27,8 @@ public class Tour {
     private String description;
     private Long numberOfDays;
     private Long numberOfNights;
-    private LocalDate startDate;
-    private LocalDate endDate;
+    private String departureLocation;
     private String vehicle;
-    private String departure;
     private Double hotelStar;
     private Long numberOfSeats;
     private Long availableSeats;
@@ -44,6 +42,7 @@ public class Tour {
     @OneToMany(mappedBy = "tour")
     private List<TourImage> images;
     @OneToMany(mappedBy = "tour")
-
+    private List<DepartureTime> departureTimes;
+    @OneToMany(mappedBy = "tour")
     private List<TourSchedule> schedules;
 }

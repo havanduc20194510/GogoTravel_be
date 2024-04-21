@@ -1,14 +1,12 @@
 package com.haduc.go_travel_system.dto.request;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.util.Date;
 
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -21,10 +19,8 @@ public class CreateTourRequest {
     private String description;
     private Long numberOfDays;
     private Long numberOfNights;
-    private LocalDate startDate;
-    private LocalDate endDate;
     private String vehicle;
-    private String departure;
+    private String departureLocation;
     private Double hotelStar;
     private Long numberOfSeats;
     private Long availableSeats;

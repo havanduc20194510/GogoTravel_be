@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 @Entity
@@ -22,9 +23,9 @@ public class Task {
     private ScheduleDetail scheduleDetail;
     private String name;
     private String description;
-    private Long star;
+    private Long coin;
     private String reward;
-    private Date deadline;
+    private LocalDate deadline;
     private String status;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "taskTypeId")

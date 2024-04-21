@@ -23,18 +23,15 @@ public class TourResponse {
     private String description;
     private Long numberOfDays;
     private Long numberOfNights;
-    private Date startDate;
-    private Date endDate;
     private String vehicle;
-    private String departure;
+    private String departureLocation;
     private Double hotelStar;
     private Long numberOfSeats;
     private Long availableSeats;
     private String status;
     private String note;
     private TourType tourType;
-    @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private List<TourImageReponse> images;
-    @JsonInclude(JsonInclude.Include.NON_EMPTY)
+    private List<DepartureTimeResponse> departureTimes;
     private List<TourScheduleResponse> schedules;
 }

@@ -13,6 +13,7 @@ public interface TourMapper {
 
     Tour toTour(CreateTourRequest request);
 
+
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     Tour partialUpdate(TourResponse tourResponse, @MappingTarget Tour tour);
 }

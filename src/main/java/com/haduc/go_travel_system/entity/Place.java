@@ -30,8 +30,8 @@ public class Place {
     private String rating;
     private String tag;
     @ManyToOne
-    @JoinColumn(name = "activity_id")
-    private PlaceActivity activity;
+    @JoinColumn(name = "activityId")
+    private Activity activity;
     private String createAt;
     private String updateAt;
 }
