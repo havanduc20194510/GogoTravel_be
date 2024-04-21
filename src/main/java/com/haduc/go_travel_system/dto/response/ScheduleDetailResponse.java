@@ -13,8 +13,6 @@ public class ScheduleDetailResponse {
     private Long id;
     private String timeLine;
     private String place;
-    private String description;
     private String activity;
-    private String image;
     private TaskResponse task;
 }

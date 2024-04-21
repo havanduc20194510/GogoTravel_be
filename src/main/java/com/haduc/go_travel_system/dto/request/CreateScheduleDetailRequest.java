@@ -13,6 +13,5 @@ public class CreateScheduleDetailRequest {
     private Long tourScheduleId;
     private String timeLine;
     private String place;
-    private String description;
     private String activity;
 }
