@@ -1,5 +1,6 @@
 package com.haduc.go_travel_system.dto.request;
 
+import com.haduc.go_travel_system.enums.TourStatus;
 import lombok.*;
 
 import java.time.LocalDate;
@@ -24,7 +25,7 @@ public class CreateTourRequest {
     private Double hotelStar;
     private Long numberOfSeats;
     private Long availableSeats;
-    private String status;
+    private TourStatus status;
     private String note;
     private Long tourTypeId;
 }
