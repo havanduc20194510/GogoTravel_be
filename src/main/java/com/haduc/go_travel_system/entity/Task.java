@@ -1,5 +1,6 @@
 package com.haduc.go_travel_system.entity;
 
+import com.haduc.go_travel_system.enums.TaskStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -26,7 +27,8 @@ public class Task {
     private Long coin;
     private String reward;
     private LocalDate deadline;
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private TaskStatus status;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "taskTypeId")
     private TaskType taskType;
