@@ -23,4 +23,7 @@ public class TourSchedule {
 
     @OneToMany(mappedBy = "tourSchedule")
     private List<ScheduleDetail> scheduleDetail;
+
+    @OneToOne(mappedBy = "tourSchedule")
+    private Task task;
 }

@@ -2,10 +2,8 @@ package com.haduc.go_travel_system.entity;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import jdk.jshell.Snippet;
+import lombok.*;
 
 @Entity
 @Getter
@@ -13,6 +11,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
+@Builder
 public class ScheduleDetail {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,6 +22,4 @@ public class ScheduleDetail {
     private String timeLine;
     private String place;
     private String activity;
-    @OneToOne(mappedBy = "scheduleDetail")
-    private Task task;
 }

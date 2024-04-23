@@ -5,11 +5,12 @@ import com.haduc.go_travel_system.dto.response.TourScheduleResponse;
 import com.haduc.go_travel_system.entity.TourSchedule;
 import org.mapstruct.*;
 
-@Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = MappingConstants.ComponentModel.SPRING)
+@Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = MappingConstants.ComponentModel.SPRING, uses = {ScheduleDetailMapper.class, TaskMapper.class})
 public interface TourScheduleMapper {
+
     TourScheduleResponse toDto(TourSchedule tourSchedule);
 
-    TourSchedule toTourSchedule(CreateTourScheduleRequest request);
+    TourSchedule toSchedule(CreateTourScheduleRequest request);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     TourSchedule partialUpdate(TourScheduleResponse tourScheduleResponse, @MappingTarget TourSchedule tourSchedule);

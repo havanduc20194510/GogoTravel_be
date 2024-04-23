@@ -25,7 +25,7 @@ public class TourScheduleServiceImpl implements TourScheduleService {
 
     @Override
     public TourScheduleResponse createTourSchedule(CreateTourScheduleRequest request) {
-        TourSchedule tourSchedule = tourScheduleMapper.toTourSchedule(request);
+        TourSchedule tourSchedule = tourScheduleMapper.toSchedule(request);
         Tour tour = tourRepository.findById(request.getTourId()).orElseThrow(() -> new AppException(ErrorCode.TOUR_NOT_FOUND));
         tourSchedule.setTour(tour);
         TourSchedule tourScheduleSaved = tourScheduleRepository.save(tourSchedule);

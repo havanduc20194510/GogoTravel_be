@@ -3,9 +3,10 @@ package com.haduc.go_travel_system.dto.response;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.haduc.go_travel_system.entity.TourType;
 import com.haduc.go_travel_system.enums.TourStatus;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import lombok.*;
 
-import java.util.Date;
 import java.util.List;
 
 @Getter
@@ -29,6 +30,7 @@ public class TourResponse {
     private Double hotelStar;
     private Long numberOfSeats;
     private Long availableSeats;
+    @Enumerated(EnumType.STRING)
     private TourStatus status;
     private String note;
     private TourType tourType;
