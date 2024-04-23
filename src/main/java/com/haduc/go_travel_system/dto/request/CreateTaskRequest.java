@@ -19,7 +19,5 @@ public class CreateTaskRequest {
     private Long coin;
     private String reward;
     private LocalDate deadline;
-    @Enumerated(EnumType.STRING)
-    private TaskStatus status;
     private String taskTypeName;
 }

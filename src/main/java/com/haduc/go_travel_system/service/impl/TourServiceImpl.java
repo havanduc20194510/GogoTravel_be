@@ -8,7 +8,7 @@ import com.haduc.go_travel_system.entity.Tour;
 import com.haduc.go_travel_system.entity.TourImage;
 import com.haduc.go_travel_system.entity.TourType;
 import com.haduc.go_travel_system.mapper.CreateTourMapper;
-import com.haduc.go_travel_system.util.TourMapper;
+import com.haduc.go_travel_system.mapper.TourMapper;
 import com.haduc.go_travel_system.repository.TourImageRepository;
 import com.haduc.go_travel_system.repository.TourRepository;
 import com.haduc.go_travel_system.repository.TourTypeRepository;
@@ -32,6 +32,8 @@ public class TourServiceImpl implements TourService {
     private CreateTourMapper createTourMapper;
     private TourTypeRepository tourTypeRepository;
     private TourImageRepository tourImageRepository;
+
+    private TourMapper tourMapper;
 
     @Override
     public CreateTourResponse createTour(CreateTourRequest request, String tourType, MultipartFile[] images) {
@@ -77,7 +79,6 @@ public class TourServiceImpl implements TourService {
     @Override
     public List<TourResponse> getAllTours() {
         List<Tour> tours = tourRepository.findAll();
-        return tours.stream().map(TourMapper::toDto).collect(Collectors.toList());
-
+        return tours.stream().map(tour -> tourMapper.toDto(tour)).collect(Collectors.toList());
     }
 }

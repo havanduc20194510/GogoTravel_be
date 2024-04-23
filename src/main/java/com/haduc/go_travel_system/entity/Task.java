@@ -28,7 +28,7 @@ public class Task {
     private LocalDate deadline;
     @Enumerated(EnumType.STRING)
     private TaskStatus status;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "taskTypeId")
     private TaskType taskType;
 }
