@@ -5,14 +5,12 @@ import com.haduc.go_travel_system.dto.response.ApiResponse;
 import com.haduc.go_travel_system.dto.response.TaskResponse;
 import com.haduc.go_travel_system.service.TaskService;
 import lombok.AllArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @AllArgsConstructor
 @RequestMapping("/task")
+@CrossOrigin(origins = "*")
 public class TaskController {
     private TaskService taskService;
     @PostMapping("/create")

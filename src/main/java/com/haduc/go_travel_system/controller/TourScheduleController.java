@@ -7,14 +7,12 @@ import com.haduc.go_travel_system.dto.response.TourScheduleResponse;
 import com.haduc.go_travel_system.repository.TourScheduleRepository;
 import com.haduc.go_travel_system.service.TourScheduleService;
 import lombok.AllArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @AllArgsConstructor
 @RequestMapping("/tour-schedule")
+@CrossOrigin(origins = "*")
 public class TourScheduleController {
     private TourScheduleService tourScheduleService;
 

@@ -5,14 +5,12 @@ import com.haduc.go_travel_system.dto.response.ApiResponse;
 import com.haduc.go_travel_system.dto.response.ScheduleDetailResponse;
 import com.haduc.go_travel_system.service.ScheduleDetailService;
 import lombok.AllArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @AllArgsConstructor
 @RequestMapping("/schedule-detail")
+@CrossOrigin(origins = "*")
 public class ScheduleDetailController {
     private ScheduleDetailService scheduleDetailService;
 
