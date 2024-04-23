@@ -1,14 +1,12 @@
 package com.haduc.go_travel_system.util;
 
 import com.haduc.go_travel_system.dto.response.*;
-import com.haduc.go_travel_system.entity.DepartureTime;
-import com.haduc.go_travel_system.entity.Tour;
-import com.haduc.go_travel_system.entity.TourImage;
-import com.haduc.go_travel_system.entity.TourSchedule;
+import com.haduc.go_travel_system.entity.*;
+import org.springframework.context.annotation.Configuration;
 
 import java.util.List;
 
-
+@Configuration
 public class TourMapper {
     public static TourResponse toDto(Tour tour) {
         TourResponse response = new TourResponse();
@@ -30,42 +28,57 @@ public class TourMapper {
         response.setNote(tour.getNote());
         response.setTourType(tour.getTourType());
         List<TourImage> images = tour.getImages();
-        if(images != null) {
+        if (images != null) {
             response.setImages(images.stream().map(image -> TourImageReponse.builder()
                     .id(image.getId())
                     .url(image.getUrl())
                     .build()).toList());
         }
         List<DepartureTime> departureTimes = tour.getDepartureTimes();
-        if(departureTimes != null) {
+        if (departureTimes != null) {
             response.setDepartureTimes(departureTimes.stream().map(departureTime -> DepartureTimeResponse.builder()
                     .id(departureTime.getId())
                     .startDate(departureTime.getStartDate())
                     .build()).toList());
         }
         List<TourSchedule> schedules = tour.getSchedules();
-        if(schedules != null) {
-            response.setSchedules(schedules.stream().map(schedule -> TourScheduleResponse.builder()
-                    .id(schedule.getId())
-                    .timeInDays(schedule.getTimeInDays())
-                    .title(schedule.getTitle())
-                    .scheduleDetail(schedule.getScheduleDetail().stream().map(detail -> ScheduleDetailResponse.builder()
-                            .id(detail.getId())
-                            .timeLine(detail.getTimeLine())
-                            .place(detail.getPlace())
-                            .activity(detail.getActivity())
-                            .build()).toList())
-                    .task(TaskResponse.builder()
-                            .id(schedule.getTask().getId())
-                            .name(schedule.getTask().getName())
-                            .description(schedule.getTask().getDescription())
-                            .coin(schedule.getTask().getCoin())
-                            .reward(schedule.getTask().getReward())
-                            .deadline(schedule.getTask().getDeadline())
-                            .status(schedule.getTask().getStatus())
-                            .taskType(schedule.getTask().getTaskType())
-                            .build())
-                    .build()).toList());
+        if (schedules != null) {
+            List<TourScheduleResponse> scheduleResponses = schedules.stream().map(schedule -> {
+                TourScheduleResponse scheduleResponse = new TourScheduleResponse();
+                scheduleResponse.setId(schedule.getId());
+                scheduleResponse.setTimeInDays(schedule.getTimeInDays());
+                scheduleResponse.setTitle(schedule.getTitle());
+                List<ScheduleDetailResponse> scheduleDetailResponses = schedule.getScheduleDetail().stream().map(scheduleDetail -> {
+                    ScheduleDetailResponse scheduleDetailResponse = new ScheduleDetailResponse();
+                    scheduleDetailResponse.setId(scheduleDetail.getId());
+                    scheduleDetailResponse.setTimeLine(scheduleDetail.getTimeLine());
+                    scheduleDetailResponse.setPlace(scheduleDetail.getPlace());
+                    scheduleDetailResponse.setActivity(scheduleDetail.getActivity());
+                    return scheduleDetailResponse;
+                }).toList();
+                scheduleResponse.setScheduleDetail(scheduleDetailResponses);
+                if (schedule.getTask() != null) {
+                    TaskResponse taskResponse = new TaskResponse();
+                    taskResponse.setId(schedule.getTask().getId());
+                    taskResponse.setName(schedule.getTask().getTaskType().getName());
+                    taskResponse.setDescription(schedule.getTask().getDescription());
+                    taskResponse.setCoin(schedule.getTask().getCoin());
+                    taskResponse.setReward(schedule.getTask().getReward());
+                    taskResponse.setDeadline(schedule.getTask().getDeadline());
+                    taskResponse.setStatus(schedule.getTask().getStatus());
+                    TaskType taskType = schedule.getTask().getTaskType();
+                    if (taskType != null) {
+                        taskType.setId(schedule.getTask().getTaskType().getId());
+                        taskType.setName(schedule.getTask().getTaskType().getName());
+                    }
+                    taskResponse.setTaskType(taskType);
+                    scheduleResponse.setTask(taskResponse);
+                } else {
+                    scheduleResponse.setTask(null);
+                }
+                return scheduleResponse;
+            }).toList();
+            response.setSchedules(scheduleResponses);
         }
         return response;
     }

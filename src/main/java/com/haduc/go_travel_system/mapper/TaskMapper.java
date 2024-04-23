@@ -7,9 +7,9 @@ import org.mapstruct.*;
 
 @Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = MappingConstants.ComponentModel.SPRING)
 public interface TaskMapper {
-    TaskResponse toDto(Task task);
-
     Task toTask(CreateTaskRequest request);
+
+    TaskResponse toDto(Task task);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     Task partialUpdate(TaskResponse taskResponse, @MappingTarget Task task);
