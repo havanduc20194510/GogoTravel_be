@@ -9,11 +9,11 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonInclude(JsonInclude.Include.NON_NULL)
 @Builder
 public class TourScheduleResponse {
     private Long id;
     private String timeInDays;
     private String title;
     private List<ScheduleDetailResponse> scheduleDetail;
+    private TaskResponse task;
 }

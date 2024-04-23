@@ -1,12 +1,14 @@
 package com.haduc.go_travel_system.service.impl;
 
 import com.haduc.go_travel_system.dto.request.CreateTourRequest;
+import com.haduc.go_travel_system.dto.response.CreateTourResponse;
 import com.haduc.go_travel_system.dto.response.TourImageReponse;
 import com.haduc.go_travel_system.dto.response.TourResponse;
 import com.haduc.go_travel_system.entity.Tour;
 import com.haduc.go_travel_system.entity.TourImage;
 import com.haduc.go_travel_system.entity.TourType;
-import com.haduc.go_travel_system.mapper.TourMapper;
+import com.haduc.go_travel_system.mapper.CreateTourMapper;
+import com.haduc.go_travel_system.util.TourMapper;
 import com.haduc.go_travel_system.repository.TourImageRepository;
 import com.haduc.go_travel_system.repository.TourRepository;
 import com.haduc.go_travel_system.repository.TourTypeRepository;
@@ -19,20 +21,21 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
 public class TourServiceImpl implements TourService {
     private TourRepository tourRepository;
     private CloudinaryService cloudinaryService;
-    private TourMapper tourMapper;
-    private TourTypeRepository tourTypeRepository;
 
+    private CreateTourMapper createTourMapper;
+    private TourTypeRepository tourTypeRepository;
     private TourImageRepository tourImageRepository;
 
     @Override
-    public TourResponse createTour(CreateTourRequest request, String tourType, MultipartFile[] images) {
-        Tour tour = tourMapper.toTour(request);
+    public CreateTourResponse createTour(CreateTourRequest request, String tourType, MultipartFile[] images) {
+        Tour tour = createTourMapper.toTour(request);
         TourType type = tourTypeRepository.findByName(tourType);
         if(type == null) {
             TourType newType = new TourType();
@@ -43,7 +46,7 @@ public class TourServiceImpl implements TourService {
             tour.setTourType(type);
         }
         Tour savedTour = tourRepository.save(tour);
-        TourResponse tourResponse = tourMapper.toDto(savedTour);
+        CreateTourResponse createTourResponse = createTourMapper.toDto(savedTour);
         Arrays.stream(images).forEach(image -> {
             try {
                 String imageUrl = cloudinaryService.uploadImage(image).get("url").toString();
@@ -57,24 +60,24 @@ public class TourServiceImpl implements TourService {
         });
         List<TourImage> tourImages = tourImageRepository.findByTourTourId(tour.getTourId());
         List<TourImageReponse> imageOfTour = tourImages.stream().map(tourImage -> TourImageReponse.builder().id(tourImage.getId()).url(tourImage.getUrl()).build()).toList();
-        tourResponse.setImages(imageOfTour);
-        return tourResponse;
+        createTourResponse.setImages(imageOfTour);
+        return createTourResponse;
     }
 
     @Override
-    public TourResponse updateTour(Tour tour) {
+    public CreateTourResponse updateTour(Tour tour) {
         return null;
     }
 
     @Override
-    public TourResponse getTour(Long id) {
+    public CreateTourResponse getTour(Long id) {
         return null;
     }
 
     @Override
     public List<TourResponse> getAllTours() {
         List<Tour> tours = tourRepository.findAll();
-        List<TourResponse> tourResponses = tours.stream().map(tourMapper::toDto).toList();
-        return tourResponses;
+        return tours.stream().map(TourMapper::toDto).collect(Collectors.toList());
+
     }
 }

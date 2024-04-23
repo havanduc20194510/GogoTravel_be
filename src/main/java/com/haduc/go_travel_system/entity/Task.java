@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
-import java.util.Date;
 
 @Entity
 @Getter
@@ -20,8 +19,8 @@ public class Task {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "ScheduleDetailId")
-    private ScheduleDetail scheduleDetail;
+    @JoinColumn(name = "tourScheduleId", referencedColumnName = "id")
+    private TourSchedule tourSchedule;
     private String name;
     private String description;
     private Long coin;

@@ -14,5 +14,4 @@ public class ScheduleDetailResponse {
     private String timeLine;
     private String place;
     private String activity;
-    private TaskResponse task;
 }

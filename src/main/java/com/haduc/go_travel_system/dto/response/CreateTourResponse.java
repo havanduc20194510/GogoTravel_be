@@ -1,19 +1,22 @@
-package com.haduc.go_travel_system.dto.request;
+package com.haduc.go_travel_system.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.haduc.go_travel_system.entity.TourType;
 import com.haduc.go_travel_system.enums.TourStatus;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import lombok.*;
 
-import java.time.LocalDate;
-import java.util.Date;
+import java.util.List;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class CreateTourRequest {
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public class CreateTourResponse {
+    private String tourId;
     private String name;
     private Double adultPrice;
     private Double childPrice;
@@ -30,5 +33,6 @@ public class CreateTourRequest {
     @Enumerated(EnumType.STRING)
     private TourStatus status;
     private String note;
-    private Long tourTypeId;
+    private TourType tourType;
+    private List<TourImageReponse> images;
 }

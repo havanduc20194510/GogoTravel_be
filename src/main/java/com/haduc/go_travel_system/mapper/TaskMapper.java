@@ -7,8 +7,6 @@ import org.mapstruct.*;
 
 @Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = MappingConstants.ComponentModel.SPRING)
 public interface TaskMapper {
-    Task toEntity(TaskResponse taskResponse);
-
     TaskResponse toDto(Task task);
 
     Task toTask(CreateTaskRequest request);

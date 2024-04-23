@@ -2,9 +2,10 @@ package com.haduc.go_travel_system.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.haduc.go_travel_system.entity.TaskType;
+import com.haduc.go_travel_system.enums.TaskStatus;
 import lombok.*;
 
-import java.util.Date;
+import java.time.LocalDate;
 @Getter
 @Setter
 @NoArgsConstructor
@@ -17,7 +18,7 @@ public class TaskResponse {
     private String description;
     private Long coin;
     private String reward;
-    private Date deadline;
-    private String status;
+    private LocalDate deadline;
+    private TaskStatus status;
     private TaskType taskType;
 }
