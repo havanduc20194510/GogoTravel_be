@@ -28,7 +28,6 @@ import java.util.stream.Collectors;
 public class TourServiceImpl implements TourService {
     private TourRepository tourRepository;
     private CloudinaryService cloudinaryService;
-
     private CreateTourMapper createTourMapper;
     private TourTypeRepository tourTypeRepository;
     private TourImageRepository tourImageRepository;
@@ -67,13 +66,23 @@ public class TourServiceImpl implements TourService {
     }
 
     @Override
-    public CreateTourResponse updateTour(Tour tour) {
+    public TourResponse updateTour(CreateTourRequest request, String tourId) {
+        Tour tour = tourRepository.findByTourId(tourId);
+        if(tour == null) {
+            throw new RuntimeException("Tour not found");
+        }
         return null;
     }
 
     @Override
-    public CreateTourResponse getTour(Long id) {
-        return null;
+    public TourResponse getTour(String tourId) {
+        try
+        {
+            Tour tour = tourRepository.findByTourId(tourId);
+            return tourMapper.toDto(tour);
+        }catch (Exception e) {
+            throw new RuntimeException("Tour not found");
+        }
     }
 
     @Override

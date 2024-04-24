@@ -2,10 +2,7 @@ package com.haduc.go_travel_system.entity;
 
 import com.haduc.go_travel_system.enums.TourStatus;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -15,6 +12,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class Tour {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)

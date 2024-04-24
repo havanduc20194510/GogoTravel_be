@@ -36,4 +36,9 @@ public class TourController {
         return ApiResponse.<List<TourResponse>>builder().data(tours).message("get list tour successfully!").build();
     }
 
+    @GetMapping("/{tourId}")
+    public ApiResponse<TourResponse> getTour(@PathVariable String tourId) {
+        TourResponse tour = tourService.getTour(tourId);
+        return ApiResponse.<TourResponse>builder().data(tour).message("get tour successfully!").build();
+    }
 }

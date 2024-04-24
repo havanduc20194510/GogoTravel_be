@@ -6,5 +6,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface TourRepository extends JpaRepository<Tour, String> {
+    Tour findByTourId(String tourId);
 
 }
