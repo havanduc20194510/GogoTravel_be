@@ -10,8 +10,7 @@ import java.util.List;
 
 public interface TourService {
     CreateTourResponse createTour(CreateTourRequest request, String tourType, MultipartFile[] images);
-    CreateTourResponse updateTour(Tour tour);
-    CreateTourResponse getTour(Long id);
-
+    TourResponse updateTour(CreateTourRequest request, String tourId);
+    TourResponse getTour(String tourId);
     List<TourResponse> getAllTours();
 }
