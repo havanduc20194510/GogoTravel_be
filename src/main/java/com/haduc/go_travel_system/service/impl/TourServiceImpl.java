@@ -21,6 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -76,13 +77,11 @@ public class TourServiceImpl implements TourService {
 
     @Override
     public TourResponse getTour(String tourId) {
-        try
-        {
-            Tour tour = tourRepository.findByTourId(tourId);
-            return tourMapper.toDto(tour);
-        }catch (Exception e) {
+        Optional<Tour> tour = tourRepository.findById(tourId);
+        if(tour.isEmpty()) {
             throw new RuntimeException("Tour not found");
         }
+        return tourMapper.toDto(tour.get());
     }
 
     @Override
