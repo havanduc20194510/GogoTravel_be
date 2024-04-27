@@ -28,5 +28,5 @@ public class CreateTourRequest {
     @Enumerated(EnumType.STRING)
     private TourStatus status;
     private String note;
-    private String tourType;
+    private String tourTypeName;
 }
