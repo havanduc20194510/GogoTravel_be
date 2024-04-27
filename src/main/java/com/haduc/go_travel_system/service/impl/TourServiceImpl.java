@@ -38,10 +38,10 @@ public class TourServiceImpl implements TourService {
     @Override
     public CreateTourResponse createTour(CreateTourRequest request) {
         Tour tour = createTourMapper.toTour(request);
-        TourType type = tourTypeRepository.findByName(request.getTourType());
+        TourType type = tourTypeRepository.findByName(request.getTourTypeName());
         if(type == null) {
             TourType newType = new TourType();
-            newType.setName(request.getTourType());
+            newType.setName(request.getTourTypeName());
             TourType typeSaved = tourTypeRepository.save(newType);
             tour.setTourType(typeSaved);
         }else {
