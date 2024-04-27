@@ -36,34 +36,43 @@ public class TourServiceImpl implements TourService {
     private TourMapper tourMapper;
 
     @Override
-    public CreateTourResponse createTour(CreateTourRequest request, String tourType, MultipartFile[] images) {
+    public CreateTourResponse createTour(CreateTourRequest request) {
         Tour tour = createTourMapper.toTour(request);
-        TourType type = tourTypeRepository.findByName(tourType);
+        TourType type = tourTypeRepository.findByName(request.getTourType());
         if(type == null) {
             TourType newType = new TourType();
-            newType.setName(tourType);
+            newType.setName(request.getTourType());
             TourType typeSaved = tourTypeRepository.save(newType);
             tour.setTourType(typeSaved);
         }else {
             tour.setTourType(type);
         }
         Tour savedTour = tourRepository.save(tour);
-        CreateTourResponse createTourResponse = createTourMapper.toDto(savedTour);
+        return createTourMapper.toDto(savedTour);
+    }
+
+    @Override
+    public TourResponse uploadImage(MultipartFile[] images, String tourId) {
+        Optional<Tour> tour = tourRepository.findById(tourId);
+        if(tour.isEmpty()) {
+            throw new RuntimeException("Tour not found");
+        }
+        TourResponse tourResponse = tourMapper.toDto(tour.get());
         Arrays.stream(images).forEach(image -> {
             try {
                 String imageUrl = cloudinaryService.uploadImage(image).get("url").toString();
                 TourImage tourImage = new TourImage();
-                tourImage.setTour(tour);
+                tourImage.setTour(tour.get());
                 tourImage.setUrl(imageUrl);
                 tourImageRepository.save(tourImage);
             } catch (IOException e) {
                 throw new RuntimeException("Error uploading image");
             }
         });
-        List<TourImage> tourImages = tourImageRepository.findByTourTourId(tour.getTourId());
+        List<TourImage> tourImages = tourImageRepository.findByTourTourId(tourId);
         List<TourImageReponse> imageOfTour = tourImages.stream().map(tourImage -> TourImageReponse.builder().id(tourImage.getId()).url(tourImage.getUrl()).build()).toList();
-        createTourResponse.setImages(imageOfTour);
-        return createTourResponse;
+        tourResponse.setImages(imageOfTour);
+        return tourResponse;
     }
 
     @Override

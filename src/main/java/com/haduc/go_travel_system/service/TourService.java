@@ -9,7 +9,9 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 public interface TourService {
-    CreateTourResponse createTour(CreateTourRequest request, String tourType, MultipartFile[] images);
+    CreateTourResponse createTour(CreateTourRequest request);
+
+    TourResponse uploadImage(MultipartFile[] file, String tourId);
     TourResponse updateTour(CreateTourRequest request, String tourId);
     TourResponse getTour(String tourId);
     List<TourResponse> getAllTours();
