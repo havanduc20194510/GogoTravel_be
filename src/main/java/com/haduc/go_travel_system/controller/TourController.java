@@ -30,8 +30,8 @@ public class TourController {
         return ApiResponse.<CreateTourResponse>builder().data(createTourResponse).message("create tour successfully!").build();
     }
 
-    @PostMapping("/upload-image")
-    public ApiResponse<TourResponse> uploadImage(@RequestPart("images") MultipartFile[] images, @RequestPart("tourId") String tourId) {
+    @PostMapping("/upload-image/{tourId}")
+    public ApiResponse<TourResponse> uploadImage(@RequestPart("images") MultipartFile[] images, @PathVariable String tourId) {
         TourResponse tourResponse = tourService.uploadImage(images, tourId);
         return ApiResponse.<TourResponse>builder().data(tourResponse).message("upload image successfully!").build();
     }
