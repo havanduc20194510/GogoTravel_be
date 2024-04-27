@@ -5,8 +5,6 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import lombok.*;
 
-import java.time.LocalDate;
-import java.util.Date;
 
 @Getter
 @Setter
@@ -30,4 +28,5 @@ public class CreateTourRequest {
     @Enumerated(EnumType.STRING)
     private TourStatus status;
     private String note;
+    private String tourType;
 }

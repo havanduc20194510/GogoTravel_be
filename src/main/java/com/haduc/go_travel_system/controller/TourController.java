@@ -25,9 +25,15 @@ import java.util.List;
 public class TourController {
     private TourService tourService;
     @PostMapping("/create")
-    public ApiResponse<CreateTourResponse> createTour(@RequestPart("request")CreateTourRequest request, @RequestPart("images") MultipartFile[] images, @RequestPart("tourType") String tourType ) {
-        CreateTourResponse createTourResponse = tourService.createTour(request,tourType,images);
+    public ApiResponse<CreateTourResponse> createTour(@RequestBody CreateTourRequest request) {
+        CreateTourResponse createTourResponse = tourService.createTour(request);
         return ApiResponse.<CreateTourResponse>builder().data(createTourResponse).message("create tour successfully!").build();
+    }
+
+    @PostMapping("/upload-image")
+    public ApiResponse<TourResponse> uploadImage(@RequestPart("images") MultipartFile[] images, @RequestPart("tourId") String tourId) {
+        TourResponse tourResponse = tourService.uploadImage(images, tourId);
+        return ApiResponse.<TourResponse>builder().data(tourResponse).message("upload image successfully!").build();
     }
 
     @GetMapping("/list")
