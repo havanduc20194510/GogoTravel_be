@@ -30,4 +30,6 @@ public interface TourService {
     Page<TourResponse> findToursWithPaginationAndSort(int offset, int pageSize, String sortField);
 
     List<TourResponse> searchTour(String destination, String departureLocation, LocalDate startDate, Long numberOfDay);
+
+    Page<TourResponse> searchTourWithPagination(String destination, String departureLocation, LocalDate startDate, Long numberOfDay, int offset, int pageSize);
 }
