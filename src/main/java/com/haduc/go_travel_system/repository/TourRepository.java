@@ -5,7 +5,10 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
+import java.util.List;
+
 @Repository
 public interface TourRepository extends JpaRepository<Tour, String>, PagingAndSortingRepository<Tour, String> {
-    Tour findByTourId(String tourId);
+    List<Tour> findByNameContainsIgnoreCaseAndDepartureLocationContainingIgnoreCaseAndDepartureTimesStartDateGreaterThanAndNumberOfDaysLessThanEqual(String destination, String departureLocation, LocalDate startDate, Long numberOfDay);
 }
