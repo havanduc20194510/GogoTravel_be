@@ -28,6 +28,18 @@ public class TourController {
         return ApiResponse.<CreateTourResponse>builder().data(createTourResponse).message("create tour successfully!").build();
     }
 
+    @PutMapping("/update/{tourId}")
+    public ApiResponse<TourResponse> updateTour(@RequestBody CreateTourRequest request, @PathVariable String tourId) {
+        TourResponse tourResponse = tourService.updateTour(request, tourId);
+        return ApiResponse.<TourResponse>builder().data(tourResponse).message("update tour successfully!").build();
+    }
+
+    @DeleteMapping("/delete/{tourId}")
+    public ApiResponse<String> deleteTour(@PathVariable String tourId) {
+        String message = tourService.deleteTour(tourId);
+        return ApiResponse.<String>builder().data(message).message("delete tour successfully!").build();
+    }
+
     @PostMapping("/upload-image/{tourId}")
     public ApiResponse<TourResponse> uploadImage(@RequestPart("images") MultipartFile[] images, @PathVariable String tourId) {
         TourResponse tourResponse = tourService.uploadImage(images, tourId);
