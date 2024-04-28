@@ -15,6 +15,9 @@ import com.haduc.go_travel_system.repository.TourTypeRepository;
 import com.haduc.go_travel_system.service.CloudinaryService;
 import com.haduc.go_travel_system.service.TourService;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -52,6 +55,31 @@ public class TourServiceImpl implements TourService {
     }
 
     @Override
+    public String deleteTour(String tourId) {
+        Optional<Tour> tour = tourRepository.findById(tourId);
+        if(tour.isEmpty())  {
+            throw new RuntimeException("Tour not found");
+        }
+        tourRepository.delete(tour.get());
+        return "Delete tour successfully!";
+    }
+
+    @Override
+    public Page<TourResponse> findToursWithPagination(int offset, int pageSize) {
+        Page<Tour> tours = tourRepository.findAll(PageRequest.of(offset, pageSize));
+        if(tours.isEmpty()) {
+            throw new RuntimeException("Tours is empty!");
+        }
+        return tours.map(tour -> tourMapper.toDto(tour));
+    }
+
+    @Override
+    public Page<TourResponse> findToursWithPaginationAndSort(int offset, int pageSize, String sortField) {
+        Page<Tour> tours = tourRepository.findAll(PageRequest.of(offset, pageSize).withSort(Sort.by(sortField)));
+        return tours.map(tour -> tourMapper.toDto(tour));
+    }
+
+    @Override
     public TourResponse uploadImage(MultipartFile[] images, String tourId) {
         Optional<Tour> tour = tourRepository.findById(tourId);
         if(tour.isEmpty()) {
@@ -77,11 +105,33 @@ public class TourServiceImpl implements TourService {
 
     @Override
     public TourResponse updateTour(CreateTourRequest request, String tourId) {
-        Tour tour = tourRepository.findByTourId(tourId);
-        if(tour == null) {
-            throw new RuntimeException("Tour not found");
+        Tour tour = tourRepository.findById(tourId).orElseThrow(() -> new RuntimeException("Tour not found"));
+        tour.setName(request.getName());
+        tour.setAdultPrice(request.getAdultPrice());
+        tour.setChildPrice(request.getChildPrice());
+        tour.setBabyPrice(request.getBabyPrice());
+        tour.setUnit(request.getUnit());
+        tour.setDescription(request.getDescription());
+        tour.setNumberOfDays(request.getNumberOfDays());
+        tour.setNumberOfNights(request.getNumberOfNights());
+        tour.setVehicle(request.getVehicle());
+        tour.setDepartureLocation(request.getDepartureLocation());
+        tour.setHotelStar(request.getHotelStar());
+        tour.setNumberOfSeats(request.getNumberOfSeats());
+        tour.setAvailableSeats(request.getAvailableSeats());
+        tour.setStatus(request.getStatus());
+        tour.setNote(request.getNote());
+        TourType type = tourTypeRepository.findByName(request.getTourTypeName());
+        if(type == null) {
+            TourType newType = new TourType();
+            newType.setName(request.getTourTypeName());
+            TourType typeSaved = tourTypeRepository.save(newType);
+            tour.setTourType(typeSaved);
+        }else {
+            tour.setTourType(type);
         }
-        return null;
+        Tour updatedTour = tourRepository.save(tour);
+        return tourMapper.toDto(updatedTour);
     }
 
     @Override
