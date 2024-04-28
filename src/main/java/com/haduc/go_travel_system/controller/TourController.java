@@ -10,6 +10,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Tag(
@@ -68,5 +69,11 @@ public class TourController {
     public ApiResponse<List<TourResponse>> getTourWithPaginationAndSort(@RequestParam(defaultValue = "1") int offset, @RequestParam(defaultValue = "5") int pageSize, @RequestParam String sortField) {
         List<TourResponse> tours = tourService.findToursWithPaginationAndSort(offset, pageSize, sortField).getContent();
         return ApiResponse.<List<TourResponse>>builder().data(tours).message("get tour with pagination and sort successfully!").build();
+    }
+
+    @GetMapping("search")
+    public ApiResponse<List<TourResponse>> searchTour(@RequestParam String destination, @RequestParam String departureLocation, @RequestParam LocalDate startDate, @RequestParam Long numberOfDay) {
+        List<TourResponse> tours = tourService.searchTour(destination, departureLocation, startDate, numberOfDay);
+        return ApiResponse.<List<TourResponse>>builder().data(tours).message("search tour successfully!").build();
     }
 }

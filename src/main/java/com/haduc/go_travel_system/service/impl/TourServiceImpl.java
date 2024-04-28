@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -146,6 +147,15 @@ public class TourServiceImpl implements TourService {
     @Override
     public List<TourResponse> getAllTours() {
         List<Tour> tours = tourRepository.findAll();
+        return tours.stream().map(tour -> tourMapper.toDto(tour)).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<TourResponse> searchTour(String destination, String departureLocation, LocalDate startDate, Long numberOfDay) {
+        List<Tour> tours = tourRepository.findByNameContainsIgnoreCaseAndDepartureLocationContainingIgnoreCaseAndDepartureTimesStartDateGreaterThanAndNumberOfDaysLessThanEqual(destination, departureLocation, startDate, numberOfDay);
+        if(tours.isEmpty()) {
+            throw new RuntimeException("Tour not found");
+        }
         return tours.stream().map(tour -> tourMapper.toDto(tour)).collect(Collectors.toList());
     }
 }
