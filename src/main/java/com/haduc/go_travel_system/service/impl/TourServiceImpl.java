@@ -67,7 +67,7 @@ public class TourServiceImpl implements TourService {
 
     @Override
     public Page<TourResponse> findToursWithPagination(int offset, int pageSize) {
-        Page<Tour> tours = tourRepository.findAll(PageRequest.of(offset, pageSize));
+        Page<Tour> tours = tourRepository.findAll(PageRequest.of(offset - 1, pageSize));
         if(tours.isEmpty()) {
             throw new RuntimeException("Tours is empty!");
         }
@@ -77,6 +77,9 @@ public class TourServiceImpl implements TourService {
     @Override
     public Page<TourResponse> findToursWithPaginationAndSort(int offset, int pageSize, String sortField) {
         Page<Tour> tours = tourRepository.findAll(PageRequest.of(offset, pageSize).withSort(Sort.by(sortField)));
+        if(tours.isEmpty()) {
+            throw new RuntimeException("Tours is empty!");
+        }
         return tours.map(tour -> tourMapper.toDto(tour));
     }
 
@@ -157,5 +160,14 @@ public class TourServiceImpl implements TourService {
             throw new RuntimeException("Tour not found");
         }
         return tours.stream().map(tour -> tourMapper.toDto(tour)).collect(Collectors.toList());
+    }
+
+    @Override
+    public Page<TourResponse> searchTourWithPagination(String destination, String departureLocation, LocalDate startDate, Long numberOfDay, int offset, int pageSize) {
+        Page<Tour> tours = tourRepository.findByNameContainsIgnoreCaseAndDepartureLocationContainingIgnoreCaseAndDepartureTimesStartDateGreaterThanAndNumberOfDaysLessThanEqual(destination, departureLocation, startDate, numberOfDay, PageRequest.of(offset - 1, pageSize));
+        if(tours.isEmpty()) {
+            throw new RuntimeException("Tour not found");
+        }
+        return tours.map(tour -> tourMapper.toDto(tour));
     }
 }
