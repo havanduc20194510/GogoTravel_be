@@ -4,11 +4,9 @@ import com.haduc.go_travel_system.dto.request.CreateTourRequest;
 import com.haduc.go_travel_system.dto.response.ApiResponse;
 import com.haduc.go_travel_system.dto.response.CreateTourResponse;
 import com.haduc.go_travel_system.dto.response.TourResponse;
-import com.haduc.go_travel_system.entity.Tour;
 import com.haduc.go_travel_system.service.TourService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -46,5 +44,17 @@ public class TourController {
     public ApiResponse<TourResponse> getTour(@PathVariable String tourId) {
         TourResponse tour = tourService.getTour(tourId);
         return ApiResponse.<TourResponse>builder().data(tour).message("get tour successfully!").build();
+    }
+
+    @GetMapping("list/pagination")
+    public ApiResponse<List<TourResponse>> getTourWithPagination(@RequestParam(defaultValue = "1") int offset, @RequestParam(defaultValue = "5") int pageSize) {
+        List<TourResponse> tours = tourService.findToursWithPagination(offset, pageSize).getContent();
+        return ApiResponse.<List<TourResponse>>builder().data(tours).message("get tour with pagination successfully!").build();
+    }
+
+    @GetMapping("list/pagination/sort")
+    public ApiResponse<List<TourResponse>> getTourWithPaginationAndSort(@RequestParam(defaultValue = "1") int offset, @RequestParam(defaultValue = "5") int pageSize, @RequestParam String sortField) {
+        List<TourResponse> tours = tourService.findToursWithPaginationAndSort(offset, pageSize, sortField).getContent();
+        return ApiResponse.<List<TourResponse>>builder().data(tours).message("get tour with pagination and sort successfully!").build();
     }
 }

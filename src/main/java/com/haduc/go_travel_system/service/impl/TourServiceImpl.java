@@ -15,6 +15,9 @@ import com.haduc.go_travel_system.repository.TourTypeRepository;
 import com.haduc.go_travel_system.service.CloudinaryService;
 import com.haduc.go_travel_system.service.TourService;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -49,6 +52,26 @@ public class TourServiceImpl implements TourService {
         }
         Tour savedTour = tourRepository.save(tour);
         return createTourMapper.toDto(savedTour);
+    }
+
+    @Override
+    public String deleteTour(String tourId) {
+        return null;
+    }
+
+    @Override
+    public Page<TourResponse> findToursWithPagination(int offset, int pageSize) {
+        Page<Tour> tours = tourRepository.findAll(PageRequest.of(offset, pageSize));
+        if(tours.isEmpty()) {
+            throw new RuntimeException("Tours is empty!");
+        }
+        return tours.map(tour -> tourMapper.toDto(tour));
+    }
+
+    @Override
+    public Page<TourResponse> findToursWithPaginationAndSort(int offset, int pageSize, String sortField) {
+        Page<Tour> tours = tourRepository.findAll(PageRequest.of(offset, pageSize).withSort(Sort.by(sortField)));
+        return tours.map(tour -> tourMapper.toDto(tour));
     }
 
     @Override
