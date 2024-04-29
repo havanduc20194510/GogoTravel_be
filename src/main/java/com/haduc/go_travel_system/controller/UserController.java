@@ -3,6 +3,7 @@ package com.haduc.go_travel_system.controller;
 import com.haduc.go_travel_system.dto.request.CreateUserRequest;
 import com.haduc.go_travel_system.dto.request.UpdateUserRequest;
 import com.haduc.go_travel_system.dto.response.ApiResponse;
+import com.haduc.go_travel_system.dto.response.UserResponse;
 import com.haduc.go_travel_system.entity.User;
 import com.haduc.go_travel_system.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -29,8 +30,8 @@ public class UserController {
     )
 
     @PostMapping("/create")
-    ApiResponse<User> createUser(@RequestBody @Valid CreateUserRequest request){
-        ApiResponse<User> apiResponse = new ApiResponse<>();
+    ApiResponse<UserResponse> createUser(@RequestBody @Valid CreateUserRequest request){
+        ApiResponse<UserResponse> apiResponse = new ApiResponse<>();
         apiResponse.setMessage("User created successfully");
         apiResponse.setData(userService.createUser(request));
         return apiResponse;
