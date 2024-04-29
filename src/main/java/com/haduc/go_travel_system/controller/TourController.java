@@ -82,4 +82,5 @@ public class TourController {
         List<TourResponse> tours = tourService.searchTourWithPagination(destination, departureLocation, startDate, numberOfDay, offset, pageSize).getContent();
         return ApiResponse.<List<TourResponse>>builder().data(tours).message("search tour with pagination successfully!").build();
     }
+
 }
