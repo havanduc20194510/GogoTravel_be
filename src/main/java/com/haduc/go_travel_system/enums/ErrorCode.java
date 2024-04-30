@@ -13,8 +13,7 @@ public enum ErrorCode {
     PASSWORD_INVALID(1003, "Password must be at least 6 characters"),
     TOUR_NOT_FOUND(1004, "Tour not found"),
     USER_NOT_EXISTED(1005, "User not existed"),
-
-    UNAUTHENTICATED(1006, "User not existed"),
+    UNAUTHENTICATED(1006, "Unauthenticated"),
 
 
     ;
