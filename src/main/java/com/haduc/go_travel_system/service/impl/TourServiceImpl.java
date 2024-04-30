@@ -14,7 +14,7 @@ import com.haduc.go_travel_system.repository.TourRepository;
 import com.haduc.go_travel_system.repository.TourTypeRepository;
 import com.haduc.go_travel_system.service.CloudinaryService;
 import com.haduc.go_travel_system.service.TourService;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -29,16 +29,14 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class TourServiceImpl implements TourService {
-    private TourRepository tourRepository;
-    private CloudinaryService cloudinaryService;
-    private CreateTourMapper createTourMapper;
-    private TourTypeRepository tourTypeRepository;
-    private TourImageRepository tourImageRepository;
-
-    private TourMapper tourMapper;
-
+    private final TourRepository tourRepository;
+    private final CloudinaryService cloudinaryService;
+    private final CreateTourMapper createTourMapper;
+    private final TourTypeRepository tourTypeRepository;
+    private final TourImageRepository tourImageRepository;
+    private final TourMapper tourMapper;
     @Override
     public CreateTourResponse createTour(CreateTourRequest request) {
         Tour tour = createTourMapper.toTour(request);
@@ -71,7 +69,7 @@ public class TourServiceImpl implements TourService {
         if(tours.isEmpty()) {
             throw new RuntimeException("Tours is empty!");
         }
-        return tours.map(tour -> tourMapper.toDto(tour));
+        return tours.map(tourMapper::toDto);
     }
 
     @Override
@@ -80,7 +78,7 @@ public class TourServiceImpl implements TourService {
         if(tours.isEmpty()) {
             throw new RuntimeException("Tours is empty!");
         }
-        return tours.map(tour -> tourMapper.toDto(tour));
+        return tours.map(tourMapper::toDto);
     }
 
     @Override
@@ -150,7 +148,7 @@ public class TourServiceImpl implements TourService {
     @Override
     public List<TourResponse> getAllTours() {
         List<Tour> tours = tourRepository.findAll();
-        return tours.stream().map(tour -> tourMapper.toDto(tour)).collect(Collectors.toList());
+        return tours.stream().map(tourMapper::toDto).collect(Collectors.toList());
     }
 
     @Override
@@ -159,7 +157,7 @@ public class TourServiceImpl implements TourService {
         if(tours.isEmpty()) {
             throw new RuntimeException("Tour not found");
         }
-        return tours.stream().map(tour -> tourMapper.toDto(tour)).collect(Collectors.toList());
+        return tours.stream().map(tourMapper::toDto).collect(Collectors.toList());
     }
 
     @Override
@@ -168,6 +166,6 @@ public class TourServiceImpl implements TourService {
         if(tours.isEmpty()) {
             throw new RuntimeException("Tour not found");
         }
-        return tours.map(tour -> tourMapper.toDto(tour));
+        return tours.map(tourMapper::toDto);
     }
 }

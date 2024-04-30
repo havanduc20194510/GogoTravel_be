@@ -8,17 +8,15 @@ import com.haduc.go_travel_system.mapper.DepartureTimeMapper;
 import com.haduc.go_travel_system.repository.DepartureTimeRepository;
 import com.haduc.go_travel_system.repository.TourRepository;
 import com.haduc.go_travel_system.service.DepartureTimeService;
-import com.haduc.go_travel_system.service.TourService;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class DepartureTimeServiceImpl implements DepartureTimeService {
-    private DepartureTimeMapper departureTimeMapper;
-
+    private final DepartureTimeMapper departureTimeMapper;
     private final TourRepository tourRepository;
     private final DepartureTimeRepository departureTimeRepository;
 
