@@ -4,15 +4,15 @@ import com.haduc.go_travel_system.dto.request.CreateDepartureTimeRequest;
 import com.haduc.go_travel_system.dto.response.ApiResponse;
 import com.haduc.go_travel_system.dto.response.DepartureTimeResponse;
 import com.haduc.go_travel_system.service.DepartureTimeService;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@AllArgsConstructor
+@RequiredArgsConstructor
 @RequestMapping("/departure-time")
 @CrossOrigin(origins = "*")
 public class DepartureTimeController {
-    private DepartureTimeService departureTimeService;
+    private final DepartureTimeService departureTimeService;
 
     @PostMapping("/create")
     public ApiResponse<DepartureTimeResponse> createDepartureTime(@RequestBody CreateDepartureTimeRequest request) {

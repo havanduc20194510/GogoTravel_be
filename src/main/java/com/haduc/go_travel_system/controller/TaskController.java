@@ -4,15 +4,15 @@ import com.haduc.go_travel_system.dto.request.CreateTaskRequest;
 import com.haduc.go_travel_system.dto.response.ApiResponse;
 import com.haduc.go_travel_system.dto.response.TaskResponse;
 import com.haduc.go_travel_system.service.TaskService;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@AllArgsConstructor
+@RequiredArgsConstructor
 @RequestMapping("/task")
 @CrossOrigin(origins = "*")
 public class TaskController {
-    private TaskService taskService;
+    private final TaskService taskService;
     @PostMapping("/create")
     public ApiResponse<TaskResponse> createTask(@RequestBody CreateTaskRequest request) {
         TaskResponse taskResponse = taskService.createTask(request);

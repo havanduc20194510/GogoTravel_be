@@ -9,7 +9,7 @@ import com.haduc.go_travel_system.repository.ActivityRepository;
 import com.haduc.go_travel_system.repository.PlaceRepository;
 import com.haduc.go_travel_system.service.CloudinaryService;
 import com.haduc.go_travel_system.service.PlaceService;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -18,14 +18,14 @@ import java.util.Map;
 import java.util.Optional;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class PlaceServiceImpl implements PlaceService {
-    private PlaceMapper placeMapper;
-    private ActivityRepository activityRepository;
+    private final PlaceMapper placeMapper;
+    private final ActivityRepository activityRepository;
 
-    private PlaceRepository placeRepository;
+    private final PlaceRepository placeRepository;
 
-    private CloudinaryService cloudinaryService;
+    private final CloudinaryService cloudinaryService;
 
     @Override
     public PlaceResponse createPlace(CreatePlaceRequest request, MultipartFile image) throws IOException {

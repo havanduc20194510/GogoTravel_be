@@ -2,7 +2,7 @@ package com.haduc.go_travel_system.controller;
 
 import com.haduc.go_travel_system.service.CloudinaryService;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -15,9 +15,9 @@ import java.util.Map;
         description = "CRUD REST APIs - Upload Image, Delete Image")
 @RestController
 @RequestMapping("/images")
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class CloudinaryController {
-    private CloudinaryService cloudinaryService;
+    private final CloudinaryService cloudinaryService;
     @PostMapping("/upload")
     public ResponseEntity<String> uploadImage(@RequestPart("file") MultipartFile file) throws IOException {
         Map result = cloudinaryService.uploadImage(file);

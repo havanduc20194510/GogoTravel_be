@@ -2,19 +2,17 @@ package com.haduc.go_travel_system.controller;
 
 import com.haduc.go_travel_system.dto.request.CreateTourScheduleRequest;
 import com.haduc.go_travel_system.dto.response.ApiResponse;
-import com.haduc.go_travel_system.dto.response.TourResponse;
 import com.haduc.go_travel_system.dto.response.TourScheduleResponse;
-import com.haduc.go_travel_system.repository.TourScheduleRepository;
 import com.haduc.go_travel_system.service.TourScheduleService;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@AllArgsConstructor
+@RequiredArgsConstructor
 @RequestMapping("/tour-schedule")
 @CrossOrigin(origins = "*")
 public class TourScheduleController {
-    private TourScheduleService tourScheduleService;
+    private final TourScheduleService tourScheduleService;
 
     @PostMapping("/create")
     public ApiResponse<TourScheduleResponse> createTourSchedule(@RequestBody CreateTourScheduleRequest request) {

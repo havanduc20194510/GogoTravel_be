@@ -10,17 +10,17 @@ import com.haduc.go_travel_system.mapper.TourScheduleMapper;
 import com.haduc.go_travel_system.repository.TourRepository;
 import com.haduc.go_travel_system.repository.TourScheduleRepository;
 import com.haduc.go_travel_system.service.TourScheduleService;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class TourScheduleServiceImpl implements TourScheduleService {
-    private TourScheduleMapper tourScheduleMapper;
+    private final TourScheduleMapper tourScheduleMapper;
 
-    private TourScheduleRepository tourScheduleRepository;
+    private final TourScheduleRepository tourScheduleRepository;
     private final TourRepository tourRepository;
 
     @Override

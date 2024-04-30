@@ -9,7 +9,7 @@ import com.haduc.go_travel_system.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,10 +19,10 @@ import java.util.List;
 )
 @RestController
 @RequestMapping("/users")
-@AllArgsConstructor
+@RequiredArgsConstructor
 @CrossOrigin(origins = "*")
 public class UserController {
-    private UserService userService;
+    private final UserService userService;
 
     @Operation(
             summary = "Create User REST API",

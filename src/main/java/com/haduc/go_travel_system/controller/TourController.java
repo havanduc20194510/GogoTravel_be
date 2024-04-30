@@ -6,7 +6,7 @@ import com.haduc.go_travel_system.dto.response.CreateTourResponse;
 import com.haduc.go_travel_system.dto.response.TourResponse;
 import com.haduc.go_travel_system.service.TourService;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -18,11 +18,11 @@ import java.util.List;
         description = "CRUD REST APIs - Create Tour, Update Tour, Get Tour, Get list Tours, Delete Tour"
 )
 @RestController
-@AllArgsConstructor
+@RequiredArgsConstructor
 @RequestMapping("/tour")
 @CrossOrigin(origins = "*")
 public class TourController {
-    private TourService tourService;
+    private final TourService tourService;
     @PostMapping("/create")
     public ApiResponse<CreateTourResponse> createTour(@RequestBody CreateTourRequest request) {
         CreateTourResponse createTourResponse = tourService.createTour(request);

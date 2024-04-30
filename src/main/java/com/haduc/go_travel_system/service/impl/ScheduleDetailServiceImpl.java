@@ -8,15 +8,15 @@ import com.haduc.go_travel_system.mapper.ScheduleDetailMapper;
 import com.haduc.go_travel_system.repository.ScheduleDetailRepository;
 import com.haduc.go_travel_system.repository.TourScheduleRepository;
 import com.haduc.go_travel_system.service.ScheduleDetailService;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class ScheduleDetailServiceImpl implements ScheduleDetailService {
-    private ScheduleDetailMapper scheduleDetailMapper;
-    private TourScheduleRepository tourScheduleRepository;
-    private ScheduleDetailRepository scheduleDetailRepository;
+    private final ScheduleDetailMapper scheduleDetailMapper;
+    private final TourScheduleRepository tourScheduleRepository;
+    private final ScheduleDetailRepository scheduleDetailRepository;
 
     @Override
     public ScheduleDetailResponse createScheduleDetail(CreateScheduleDetailRequest request) {

@@ -12,15 +12,16 @@ import com.haduc.go_travel_system.repository.TaskTypeRepository;
 import com.haduc.go_travel_system.repository.TourScheduleRepository;
 import com.haduc.go_travel_system.service.TaskService;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class TaskServiceImpl implements TaskService {
-    private TaskMapper taskMapper;
+    private final TaskMapper taskMapper;
 
-    private TourScheduleRepository tourScheduleRepository;
-    private TaskRepository taskRepository;
+    private final TourScheduleRepository tourScheduleRepository;
+    private final TaskRepository taskRepository;
     private final TaskTypeRepository taskTypeRepository;
 
     @Override

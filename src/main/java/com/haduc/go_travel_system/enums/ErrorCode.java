@@ -14,6 +14,9 @@ public enum ErrorCode {
     TOUR_NOT_FOUND(1004, "Tour not found"),
     USER_NOT_EXISTED(1005, "User not existed"),
 
+    UNAUTHENTICATED(1006, "User not existed"),
+
+
     ;
     private int code;
     private String message;

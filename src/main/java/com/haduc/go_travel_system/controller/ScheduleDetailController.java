@@ -4,15 +4,15 @@ import com.haduc.go_travel_system.dto.request.CreateScheduleDetailRequest;
 import com.haduc.go_travel_system.dto.response.ApiResponse;
 import com.haduc.go_travel_system.dto.response.ScheduleDetailResponse;
 import com.haduc.go_travel_system.service.ScheduleDetailService;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@AllArgsConstructor
+@RequiredArgsConstructor
 @RequestMapping("/schedule-detail")
 @CrossOrigin(origins = "*")
 public class ScheduleDetailController {
-    private ScheduleDetailService scheduleDetailService;
+    private final ScheduleDetailService scheduleDetailService;
 
     @PostMapping("/create")
     public ApiResponse<ScheduleDetailResponse> createScheduleDetail(@RequestBody CreateScheduleDetailRequest request) {
