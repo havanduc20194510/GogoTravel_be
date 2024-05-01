@@ -4,8 +4,10 @@ import com.haduc.go_travel_system.dto.request.AuthenticationRequest;
 import com.haduc.go_travel_system.dto.request.IntrospectRequest;
 import com.haduc.go_travel_system.dto.response.AuthenticationResponse;
 import com.haduc.go_travel_system.dto.response.IntrospectResponse;
+import com.haduc.go_travel_system.dto.response.UserResponse;
 import com.haduc.go_travel_system.enums.ErrorCode;
 import com.haduc.go_travel_system.exception.AppException;
+import com.haduc.go_travel_system.mapper.UserMapper;
 import com.haduc.go_travel_system.repository.UserRepository;
 import com.haduc.go_travel_system.service.AuthenticationService;
 import com.nimbusds.jose.*;
@@ -32,6 +34,8 @@ import java.util.Date;
 public class AuthenticationServiceImpl implements AuthenticationService {
     private final UserRepository userRepository;
 
+    private final UserMapper userMapper;
+
     @NonFinal
     @Value("${jwt.signerKey}")
     private String SIGNER_KEY;
@@ -45,7 +49,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             throw new AppException(ErrorCode.UNAUTHENTICATED);
         }
         var token = generateToken(request.getUsername());
-        return AuthenticationResponse.builder().token(token).authenticated(true).build();
+        UserResponse userResponse = userMapper.toDto(user);
+        return AuthenticationResponse.builder().user(userResponse).token(token).authenticated(true).build();
     }
 
     @Override
