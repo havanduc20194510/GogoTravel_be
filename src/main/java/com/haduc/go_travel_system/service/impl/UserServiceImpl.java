@@ -5,15 +5,16 @@ import com.haduc.go_travel_system.dto.request.UpdateUserRequest;
 import com.haduc.go_travel_system.dto.response.UserResponse;
 import com.haduc.go_travel_system.entity.User;
 import com.haduc.go_travel_system.enums.ErrorCode;
+import com.haduc.go_travel_system.enums.Role;
 import com.haduc.go_travel_system.exception.AppException;
 import com.haduc.go_travel_system.mapper.UserMapper;
 import com.haduc.go_travel_system.repository.UserRepository;
 import com.haduc.go_travel_system.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.List;
 
 @Service
@@ -21,6 +22,7 @@ import java.util.List;
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
+    private final PasswordEncoder passwordEncoder;
 
 
     @Override
@@ -30,14 +32,17 @@ public class UserServiceImpl implements UserService {
         }
 
         User user = userMapper.toUser(request);
-        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
         user.setPassword(passwordEncoder.encode(request.getPassword()));
+        HashSet<String> roles = new HashSet<>();
+        roles.add(Role.USER.name());
+        user.setRoles(roles);
         return userMapper.toDto(userRepository.save(user));
     }
 
     @Override
-    public User updateUser(String userId, UpdateUserRequest request) {
-        User user = getUser(userId);
+    public UserResponse updateUser(String userId, UpdateUserRequest request) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
 
         user.setUsername(request.getUsername());
         user.setPassword(request.getPassword());
@@ -45,7 +50,7 @@ public class UserServiceImpl implements UserService {
         user.setPhone(request.getPhone());
         user.setAddress(request.getAddress());
 
-        return userRepository.save(user);
+        return userMapper.toDto(userRepository.save(user));
     }
 
     @Override
@@ -54,13 +59,15 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<User> getUsers(){
-        return userRepository.findAll();
+    public List<UserResponse> getUsers(){
+        List<User> users = userRepository.findAll();
+        return users.stream().map(userMapper::toDto).toList();
     }
 
     @Override
-    public User getUser(String id){
-        return userRepository.findById(id)
+    public UserResponse getUser(String id){
+        User user = userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("User not found"));
+        return userMapper.toDto(user);
     }
 }

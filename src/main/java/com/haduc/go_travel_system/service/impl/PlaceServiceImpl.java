@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -28,10 +29,8 @@ public class PlaceServiceImpl implements PlaceService {
     private final CloudinaryService cloudinaryService;
 
     @Override
-    public PlaceResponse createPlace(CreatePlaceRequest request, MultipartFile image) throws IOException {
-        Map uploadResult = cloudinaryService.uploadImage(image);
+    public PlaceResponse createPlace(CreatePlaceRequest request) {
         Place place = placeMapper.toPlace(request);
-        place.setImage(uploadResult.get("url").toString());
         Optional<Activity> activity = activityRepository.findById(request.getActivityId());
         if (activity.isPresent()) {
             place.setActivity(activity.get());
@@ -40,6 +39,48 @@ public class PlaceServiceImpl implements PlaceService {
         }else {
             throw new RuntimeException("Activity not found");
         }
-
     }
+
+    @Override
+    public PlaceResponse updatePlace(Long placeId, CreatePlaceRequest request) {
+        return null;
+    }
+
+    @Override
+    public PlaceResponse uploadImage(Long placeId, MultipartFile file) throws IOException {
+        Place place = placeRepository.findById(placeId).orElseThrow(() -> new RuntimeException("Place not found"));
+        Map uploadResult = cloudinaryService.uploadImage(file);
+        place.setImage(uploadResult.get("url").toString());
+        Place placeSaved = placeRepository.save(place);
+        return placeMapper.toDto(placeSaved);
+    }
+
+    @Override
+    public String deletePlace(Long placeId) {
+        Place place = placeRepository.findById(placeId).orElseThrow(() -> new RuntimeException("Place not found"));
+        placeRepository.delete(place);
+        return "Place deleted successfully";
+    }
+
+    @Override
+    public PlaceResponse getPlace(Long placeId) {
+        Place place = placeRepository.findById(placeId).orElseThrow(() -> new RuntimeException("Place not found"));
+        return placeMapper.toDto(place);
+    }
+
+    @Override
+    public List<PlaceResponse> getPlaceByName(String placeName) {
+        List<Place> places = placeRepository.findByName(placeName);
+        if(places.isEmpty()) {
+            throw new RuntimeException("Place not found");
+        }
+        return places.stream().map(placeMapper::toDto).toList();
+    }
+
+    @Override
+    public List<PlaceResponse> getPlaceByCity(String location) {
+        List<Place> places = placeRepository.findByLocation(location);
+        return places.stream().map(placeMapper::toDto).toList();
+    }
+
 }
