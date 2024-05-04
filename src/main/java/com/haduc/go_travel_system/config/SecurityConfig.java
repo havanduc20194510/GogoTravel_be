@@ -29,7 +29,8 @@ public class SecurityConfig {
             "/auth/introspect",
             "/tour/list/**",
             "/tour/search/**",
-            "/tour/{id}"
+            "/tour/{id}",
+            "/tour-schedule/list/**",
     };
 
     @Bean
