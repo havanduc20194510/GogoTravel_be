@@ -4,7 +4,6 @@ import com.haduc.go_travel_system.dto.request.CreateUserRequest;
 import com.haduc.go_travel_system.dto.request.UpdateUserRequest;
 import com.haduc.go_travel_system.dto.response.ApiResponse;
 import com.haduc.go_travel_system.dto.response.UserResponse;
-import com.haduc.go_travel_system.entity.User;
 import com.haduc.go_travel_system.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -42,8 +41,12 @@ public class UserController {
             description = "Get All Users REST API is used to get all users from a database"
     )
     @GetMapping
-    List<User> getUsers(){
-        return userService.getUsers();
+    ApiResponse<List<UserResponse>> getUsers(){
+        List<UserResponse> userResponses = userService.getUsers();
+        return ApiResponse.<List<UserResponse>>builder()
+                .message("All users fetched successfully")
+                .data(userResponses)
+                .build();
     }
 
     @Operation(
@@ -52,8 +55,12 @@ public class UserController {
     )
 
     @GetMapping("/{userId}")
-    User getUser(@PathVariable("userId") String userId){
-        return userService.getUser(userId);
+    ApiResponse<UserResponse> getUser(@PathVariable("userId") String userId){
+        UserResponse userResponse = userService.getUser(userId);
+        return ApiResponse.<UserResponse>builder()
+                .message("User fetched successfully")
+                .data(userResponse)
+                .build();
     }
 
     @Operation(
@@ -62,8 +69,12 @@ public class UserController {
     )
 
     @PutMapping("/{userId}")
-    User updateUser(@PathVariable String userId, @RequestBody UpdateUserRequest request){
-        return userService.updateUser(userId, request);
+    ApiResponse<UserResponse> updateUser(@PathVariable String userId, @RequestBody UpdateUserRequest request){
+        UserResponse userResponse = userService.updateUser(userId, request);
+        return ApiResponse.<UserResponse>builder()
+                .message("User updated successfully")
+                .data(userResponse)
+                .build();
     }
 
     @Operation(
