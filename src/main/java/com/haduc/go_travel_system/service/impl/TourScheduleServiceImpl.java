@@ -43,7 +43,14 @@ public class TourScheduleServiceImpl implements TourScheduleService {
     }
 
     @Override
-    public List<TourScheduleResponse> getTourSchedule(Long tourId) {
-        return null;
+    public List<TourScheduleResponse> getTourSchedule() {
+        List<TourSchedule> tourSchedules = tourScheduleRepository.findAll();
+        return tourSchedules.stream().map(tourScheduleMapper::toDto).toList();
+    }
+
+    @Override
+    public List<TourScheduleResponse> getTourSchedule(String tourId) {
+        List<TourSchedule> tourSchedules = tourScheduleRepository.findByTourTourId(tourId);
+        return tourSchedules.stream().map(tourScheduleMapper::toDto).toList();
     }
 }

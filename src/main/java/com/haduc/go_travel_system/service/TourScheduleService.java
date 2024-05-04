@@ -9,5 +9,7 @@ public interface TourScheduleService {
     TourScheduleResponse createTourSchedule(CreateTourScheduleRequest request);
     TourScheduleResponse updateTourSchedule(CreateTourScheduleRequest request);
     String deleteTourSchedule(Long id);
-    List<TourScheduleResponse> getTourSchedule(Long tourId);
+
+    List<TourScheduleResponse> getTourSchedule();
+    List<TourScheduleResponse> getTourSchedule(String tourId);
 }

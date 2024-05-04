@@ -7,6 +7,8 @@ import com.haduc.go_travel_system.service.TourScheduleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/tour-schedule")
@@ -18,5 +20,16 @@ public class TourScheduleController {
     public ApiResponse<TourScheduleResponse> createTourSchedule(@RequestBody CreateTourScheduleRequest request) {
         TourScheduleResponse tourScheduleResponse = tourScheduleService.createTourSchedule(request);
         return ApiResponse.<TourScheduleResponse>builder().data(tourScheduleResponse).message("create tour schedule successfully!").build();
+    }
+
+    @GetMapping("/list")
+    public ApiResponse<List<TourScheduleResponse>> getTourSchedule() {
+        List<TourScheduleResponse> tourScheduleResponses = tourScheduleService.getTourSchedule();
+        return ApiResponse.<List<TourScheduleResponse>>builder().data(tourScheduleResponses).message("get tour schedule successfully!").build();
+    }
+    @GetMapping("/list/{tourId}")
+    public ApiResponse<List<TourScheduleResponse>> getTourSchedule(@PathVariable String tourId) {
+        List<TourScheduleResponse> tourScheduleResponses = tourScheduleService.getTourSchedule(tourId);
+        return ApiResponse.<List<TourScheduleResponse>>builder().data(tourScheduleResponses).message("get tour schedule by tourId successfully!").build();
     }
 }
