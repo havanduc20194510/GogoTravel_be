@@ -31,6 +31,7 @@ public class SecurityConfig {
             "/tour/search/**",
             "/tour/{id}",
             "/tour-schedule/list/**",
+            "/task/**",
     };
 
     @Bean
