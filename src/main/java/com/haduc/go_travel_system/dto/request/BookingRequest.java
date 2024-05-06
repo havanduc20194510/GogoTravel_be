@@ -1,5 +1,6 @@
 package com.haduc.go_travel_system.dto.request;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.validation.constraints.Email;
 import lombok.*;
 
@@ -10,10 +11,11 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class BookingRequest {
     private String tourId;
     private String userId;
-    @Email(message = "Email must be valid")
+    @Email(message = "EMAIL_INVALID")
     private String email;
     private String phone;
     private LocalDate startDate;

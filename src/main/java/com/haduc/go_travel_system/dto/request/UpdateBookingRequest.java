@@ -10,7 +10,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @Builder
 public class UpdateBookingRequest {
-    @Email(message = "Email should be valid")
+    @Email(message = "EMAIL_INVALID")
     private String email;
     private String phone;
     private LocalDate startDate;

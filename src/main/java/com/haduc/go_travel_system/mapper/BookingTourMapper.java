@@ -7,10 +7,12 @@ import org.mapstruct.*;
 
 @Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = MappingConstants.ComponentModel.SPRING)
 public interface BookingTourMapper {
-    BookingTour toEntity(BookingRequest bookingRequest);
+    BookingTour toEntity(BookingResponse bookingResponse);
+
+    BookingTour toBookingTour(BookingRequest bookingRequest);
 
     BookingResponse toDto(BookingTour bookingTour);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    BookingTour partialUpdate(BookingRequest bookingRequest, @MappingTarget BookingTour bookingTour);
+    BookingTour partialUpdate(BookingResponse bookingResponse, @MappingTarget BookingTour bookingTour);
 }

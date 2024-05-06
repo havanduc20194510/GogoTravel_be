@@ -1,5 +1,6 @@
 package com.haduc.go_travel_system.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.haduc.go_travel_system.enums.BookingStatus;
 import lombok.*;
 
@@ -11,8 +12,9 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class BookingResponse {
-    private Long id;
+    private String id;
     private TourResponse tour;
     private UserResponse user;
     private String email;

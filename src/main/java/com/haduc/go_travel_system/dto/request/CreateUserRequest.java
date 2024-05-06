@@ -16,6 +16,6 @@ public class CreateUserRequest {
     private String username;
     @Size(min = 6, message = "PASSWORD_INVALID")
     private String password;
-    @Email(message = "Email must be valid")
+    @Email(message = "EMAIL_INVALID")
     private String email;
 }
