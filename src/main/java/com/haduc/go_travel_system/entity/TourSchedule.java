@@ -17,13 +17,13 @@ public class TourSchedule {
     private Long id;
     private String timeInDays;
     private String title;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "tourId")
     private Tour tour;
 
-    @OneToMany(mappedBy = "tourSchedule")
+    @OneToMany(mappedBy = "tourSchedule", cascade = CascadeType.ALL)
     private List<ScheduleDetail> scheduleDetail;
 
-    @OneToOne(mappedBy = "tourSchedule")
+    @OneToOne(mappedBy = "tourSchedule", cascade = CascadeType.ALL)
     private Task task;
 }
