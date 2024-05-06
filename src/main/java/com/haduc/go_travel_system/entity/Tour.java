@@ -4,7 +4,6 @@ import com.haduc.go_travel_system.enums.TourStatus;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDate;
 import java.util.List;
 
 @Entity
@@ -34,13 +33,13 @@ public class Tour {
     @Enumerated(EnumType.STRING)
     private TourStatus status;
     private String note;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "tourTypeId")
     private TourType tourType;
-    @OneToMany(mappedBy = "tour")
+    @OneToMany(mappedBy = "tour", cascade = CascadeType.ALL)
     private List<TourImage> images;
-    @OneToMany(mappedBy = "tour")
+    @OneToMany(mappedBy = "tour", cascade = CascadeType.ALL)
     private List<DepartureTime> departureTimes;
-    @OneToMany(mappedBy = "tour")
+    @OneToMany(mappedBy = "tour", cascade = CascadeType.ALL)
     private List<TourSchedule> schedules;
 }

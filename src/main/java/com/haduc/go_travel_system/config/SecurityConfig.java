@@ -30,6 +30,7 @@ public class SecurityConfig {
             "/tour/list/**",
             "/tour/search/**",
             "/tour/{id}",
+            "/tour/**",
             "/tour-schedule/list/**",
             "/task/**",
     };
