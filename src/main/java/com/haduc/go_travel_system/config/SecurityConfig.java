@@ -24,7 +24,6 @@ public class SecurityConfig {
     private String signerKey;
 
     private final String[] PUBLIC_ENDPOINTS = {
-            "/users/create",
             "/auth/token",
             "/auth/introspect",
             "/tour/list/**",
@@ -33,13 +32,16 @@ public class SecurityConfig {
             "/tour/**",
             "/tour-schedule/list/**",
             "/task/**",
-            "/departure-time/**"
+            "/departure-time/**",
+            "/users/**",
+            "/**"
     };
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
-        httpSecurity.authorizeHttpRequests(request -> request.requestMatchers(HttpMethod.POST, "/users/create").permitAll()
-                .requestMatchers(PUBLIC_ENDPOINTS).permitAll()
+        httpSecurity.authorizeHttpRequests(request -> request.requestMatchers(PUBLIC_ENDPOINTS).permitAll()
+                .requestMatchers(HttpMethod.GET, "/booking/**").permitAll()
+                .requestMatchers(HttpMethod.POST, "/booking/create").permitAll()
                 .requestMatchers("/swagger-ui/**",
                         "/swagger-resources/*",
                         "/v3/api-docs/**").permitAll()

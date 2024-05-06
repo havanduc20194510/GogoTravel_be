@@ -5,6 +5,7 @@ import com.haduc.go_travel_system.dto.request.UpdateBookingRequest;
 import com.haduc.go_travel_system.dto.response.ApiResponse;
 import com.haduc.go_travel_system.dto.response.BookingResponse;
 import com.haduc.go_travel_system.service.BookingTourService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,7 +18,7 @@ import java.util.List;
 public class BookingController {
     private final BookingTourService bookingTourService;
     @PostMapping("/create")
-    public ApiResponse<BookingResponse> createBookingTour(@RequestBody BookingRequest bookingRequest) {
+    public ApiResponse<BookingResponse> createBookingTour(@RequestBody @Valid BookingRequest bookingRequest) {
         BookingResponse bookingResponse = bookingTourService.createBookingTour(bookingRequest);
         return ApiResponse.<BookingResponse>builder()
                 .message("Create booking tour successfully")
@@ -26,7 +27,7 @@ public class BookingController {
     }
 
     @PutMapping("/update/{id}")
-    public ApiResponse<BookingResponse> updateBookingTour(@RequestBody UpdateBookingRequest updateBookingRequest, @PathVariable String id) {
+    public ApiResponse<BookingResponse> updateBookingTour(@RequestBody @Valid UpdateBookingRequest updateBookingRequest, @PathVariable String id) {
         BookingResponse bookingResponse = bookingTourService.updateBookingTour(updateBookingRequest, id);
         return ApiResponse.<BookingResponse>builder()
                 .message("Update booking tour successfully")

@@ -37,13 +37,15 @@ public class BookingTourServiceImpl implements BookingTourService {
         if (!isContain) {
             throw new RuntimeException("Tour not contain this start date");
         }
-        BookingTour bookingTour = bookingTourMapper.toEntity(bookingRequest);
+        BookingTour bookingTour = bookingTourMapper.toBookingTour(bookingRequest);
         bookingTour.setTour(tour);
         bookingTour.setUser(user);
         LocalDateTime bookingDate = LocalDateTime.now();
         bookingTour.setBookingDate(bookingDate);
         bookingTour.setStatus(BookingStatus.PENDING);
-        return bookingTourMapper.toDto(bookingTourRepository.save(bookingTour));
+        bookingTour.setTotal(tour.getAdultPrice() * bookingRequest.getNumberOfAdults() + tour.getChildPrice() * bookingRequest.getNumberOfChildren() + tour.getBabyPrice() * bookingRequest.getNumberOfBabies());
+        BookingTour bookingSaved = bookingTourRepository.save(bookingTour);
+        return bookingTourMapper.toDto(bookingSaved);
     }
 
     @Override
@@ -74,9 +76,6 @@ public class BookingTourServiceImpl implements BookingTourService {
     @Override
     public List<BookingResponse> getAllBookingTours() {
         List<BookingTour> bookingTours = bookingTourRepository.findAll();
-        if (bookingTours.isEmpty()) {
-            return null;
-        }
         return bookingTours.stream().map(bookingTourMapper::toDto).toList();
     }
 
@@ -90,9 +89,6 @@ public class BookingTourServiceImpl implements BookingTourService {
     @Override
     public List<BookingResponse> getBookingTourByUserId(String userId) {
         List<BookingTour> bookingTours = bookingTourRepository.findByUserId(userId);
-        if (bookingTours.isEmpty()) {
-            return null;
-        }
         return bookingTours.stream().map(bookingTourMapper::toDto).toList();
     }
 }

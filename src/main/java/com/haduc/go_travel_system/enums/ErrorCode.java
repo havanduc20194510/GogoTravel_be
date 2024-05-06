@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public enum ErrorCode {
+    EMAIL_INVALID(1000, "Email must be valid"),
     USER_EXISTED(1001, "User existed"),
 
     USERNAME_INVALID(1002, "Username must be at least 4 characters"),
