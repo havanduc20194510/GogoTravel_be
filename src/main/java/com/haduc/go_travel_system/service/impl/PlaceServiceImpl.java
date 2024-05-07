@@ -2,10 +2,8 @@ package com.haduc.go_travel_system.service.impl;
 
 import com.haduc.go_travel_system.dto.request.CreatePlaceRequest;
 import com.haduc.go_travel_system.dto.response.PlaceResponse;
-import com.haduc.go_travel_system.entity.Activity;
 import com.haduc.go_travel_system.entity.Place;
 import com.haduc.go_travel_system.mapper.PlaceMapper;
-import com.haduc.go_travel_system.repository.ActivityRepository;
 import com.haduc.go_travel_system.repository.PlaceRepository;
 import com.haduc.go_travel_system.service.CloudinaryService;
 import com.haduc.go_travel_system.service.PlaceService;
@@ -16,14 +14,11 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class PlaceServiceImpl implements PlaceService {
     private final PlaceMapper placeMapper;
-    private final ActivityRepository activityRepository;
-
     private final PlaceRepository placeRepository;
 
     private final CloudinaryService cloudinaryService;
@@ -31,19 +26,23 @@ public class PlaceServiceImpl implements PlaceService {
     @Override
     public PlaceResponse createPlace(CreatePlaceRequest request) {
         Place place = placeMapper.toPlace(request);
-        Optional<Activity> activity = activityRepository.findById(request.getActivityId());
-        if (activity.isPresent()) {
-            place.setActivity(activity.get());
-            Place placeSaved = placeRepository.save(place);
-            return placeMapper.toDto(placeSaved);
-        }else {
-            throw new RuntimeException("Activity not found");
-        }
+        Place placeSaved = placeRepository.save(place);
+        return placeMapper.toDto(placeSaved);
     }
 
     @Override
     public PlaceResponse updatePlace(Long placeId, CreatePlaceRequest request) {
-        return null;
+        Place place = placeRepository.findById(placeId).orElseThrow(() -> new RuntimeException("Place not found"));
+        place.setName(request.getName());
+        place.setDescription(request.getDescription());
+        place.setAddress(request.getAddress());
+        place.setLocation(request.getLocation());
+        place.setTimeOpen(request.getTimeOpen());
+        place.setTimeClose(request.getTimeClose());
+        place.setNote(request.getNote());
+        place.setActivities(request.getActivities());
+        Place placeSaved = placeRepository.save(place);
+        return placeMapper.toDto(placeSaved);
     }
 
     @Override
