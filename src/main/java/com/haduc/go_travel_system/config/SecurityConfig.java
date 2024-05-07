@@ -34,6 +34,7 @@ public class SecurityConfig {
             "/task/**",
             "/departure-time/**",
             "/users/**",
+            "/places/**",
             "/**"
     };
 
