@@ -13,6 +13,7 @@ import com.haduc.go_travel_system.repository.BookingTourRepository;
 import com.haduc.go_travel_system.repository.TourRepository;
 import com.haduc.go_travel_system.repository.UserRepository;
 import com.haduc.go_travel_system.service.BookingTourService;
+import com.haduc.go_travel_system.service.EmailSenderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -25,6 +26,8 @@ public class BookingTourServiceImpl implements BookingTourService {
     private final BookingTourMapper bookingTourMapper;
     private final TourRepository tourRepository;
     private final UserRepository userRepository;
+
+    private final EmailSenderService emailSenderService;
 
     @Override
     public BookingResponse createBookingTour(BookingRequest bookingRequest) {
@@ -45,6 +48,7 @@ public class BookingTourServiceImpl implements BookingTourService {
         bookingTour.setStatus(BookingStatus.PENDING);
         bookingTour.setTotal(tour.getAdultPrice() * bookingRequest.getNumberOfAdults() + tour.getChildPrice() * bookingRequest.getNumberOfChildren() + tour.getBabyPrice() * bookingRequest.getNumberOfBabies());
         BookingTour bookingSaved = bookingTourRepository.save(bookingTour);
+        emailSenderService.sendSimpleEmail(bookingRequest.getEmail(), "Booking tour success!!!", "Bạn dã dặt tour thành công, mã đặt tour của bạn là: " + bookingSaved.getId() + ".Hãy thanh toán trước 24h trước khi đi tour. Cảm ơn bạn đã sử dụng dịch vụ của chúng tôi.");
         return bookingTourMapper.toDto(bookingSaved);
     }
 
@@ -64,6 +68,7 @@ public class BookingTourServiceImpl implements BookingTourService {
         bookingTour.setNumberOfChildren(updateBookingRequest.getNumberOfChildren());
         bookingTour.setNumberOfBabies(updateBookingRequest.getNumberOfBabies());
         bookingTour.setNote(updateBookingRequest.getNote());
+        bookingTour.setTotal(bookingTour.getTour().getAdultPrice() * updateBookingRequest.getNumberOfAdults() + bookingTour.getTour().getChildPrice() * updateBookingRequest.getNumberOfChildren() + bookingTour.getTour().getBabyPrice() * updateBookingRequest.getNumberOfBabies());
         return bookingTourMapper.toDto(bookingTourRepository.save(bookingTour));
     }
 
