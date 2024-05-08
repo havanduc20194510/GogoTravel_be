@@ -18,7 +18,7 @@ import java.util.List;
 public class PlaceController {
     private final PlaceService placeService;
     @PostMapping("/create")
-    public ApiResponse<PlaceResponse> createPlace(@RequestPart CreatePlaceRequest request) throws IOException {
+    public ApiResponse<PlaceResponse> createPlace(@RequestBody CreatePlaceRequest request) throws IOException {
         PlaceResponse placeResponse = placeService.createPlace(request);
         return ApiResponse.<PlaceResponse>builder()
                 .code(200)
@@ -87,4 +87,13 @@ public class PlaceController {
                 .build();
     }
 
+    @GetMapping("/all")
+    public ApiResponse<List<PlaceResponse>> getAllPlaces() {
+        List<PlaceResponse> placeResponses = placeService.getAllPlaces();
+        return ApiResponse.<List<PlaceResponse>>builder()
+                .code(200)
+                .message("Get all places successfully")
+                .data(placeResponses)
+                .build();
+    }
 }

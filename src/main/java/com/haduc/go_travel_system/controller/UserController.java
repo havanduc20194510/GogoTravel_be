@@ -87,4 +87,14 @@ public class UserController {
         userService.deleteUser(userId);
         return "User has been deleted";
     }
+
+    @GetMapping("/my-profile")
+    ApiResponse<UserResponse> getMyProfile(){
+        UserResponse userResponse = userService.getMyProfile();
+        return ApiResponse.<UserResponse>builder()
+                .message("User fetched successfully")
+                .data(userResponse)
+                .build();
+    }
+
 }

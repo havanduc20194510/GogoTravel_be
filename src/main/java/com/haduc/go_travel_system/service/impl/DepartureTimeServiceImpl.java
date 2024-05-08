@@ -11,6 +11,7 @@ import com.haduc.go_travel_system.service.DepartureTimeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -26,10 +27,45 @@ public class DepartureTimeServiceImpl implements DepartureTimeService {
         Optional<Tour> tour = tourRepository.findById(request.getTourId());
         if (tour.isPresent()) {
             departureTime.setTour(tour.get());
+            if(departureTimeRepository.existsByTourAndStartDate(departureTime.getTour(), departureTime.getStartDate())){
+                throw new RuntimeException("Departure time existed");
+            }
             DepartureTime savedDepartureTime = departureTimeRepository.save(departureTime);
             return departureTimeMapper.toDto(savedDepartureTime);
         }else {
             throw new RuntimeException("Tour not found");
         }
+    }
+
+    @Override
+    public DepartureTimeResponse getDepartureTime(Long departureTimeId) {
+        DepartureTime departureTime = departureTimeRepository.findById(departureTimeId).orElseThrow(() -> new RuntimeException("Departure time not found"));
+        return departureTimeMapper.toDto(departureTime);
+    }
+
+    @Override
+    public DepartureTimeResponse updateDepartureTime(CreateDepartureTimeRequest request, Long departureTimeId) {
+        DepartureTime departureTime = departureTimeRepository.findById(departureTimeId).orElseThrow(() -> new RuntimeException("Departure time not found"));
+        Optional<Tour> tour = tourRepository.findById(request.getTourId());
+        if (tour.isPresent()) {
+            departureTime.setTour(tour.get());
+            departureTime.setStartDate(request.getStartDate());
+            DepartureTime savedDepartureTime = departureTimeRepository.save(departureTime);
+            return departureTimeMapper.toDto(savedDepartureTime);
+        }else {
+            throw new RuntimeException("Tour not found");
+        }
+    }
+
+    @Override
+    public String deleteDepartureTime(Long departureTimeId) {
+        departureTimeRepository.deleteById(departureTimeId);
+        return "Delete successfully";
+    }
+
+    @Override
+    public List<DepartureTimeResponse> getDepartureTimeByTourId(String tourId) {
+        List<DepartureTime> departureTime = departureTimeRepository.findByTourTourId(tourId);
+        return departureTime.stream().map(departureTimeMapper::toDto).toList();
     }
 }
