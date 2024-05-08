@@ -19,4 +19,23 @@ public class ScheduleDetailController {
         ScheduleDetailResponse scheduleDetailResponse = scheduleDetailService.createScheduleDetail(request);
         return ApiResponse.<ScheduleDetailResponse>builder().data(scheduleDetailResponse).message("create schedule detail successfully!").build();
     }
+
+    @GetMapping("/get/{scheduleDetailId}")
+    public ApiResponse<ScheduleDetailResponse> getScheduleDetail(@PathVariable Long scheduleDetailId) {
+        ScheduleDetailResponse scheduleDetailResponse = scheduleDetailService.getScheduleDetail(scheduleDetailId);
+        return ApiResponse.<ScheduleDetailResponse>builder().data(scheduleDetailResponse).message("get schedule detail successfully!").build();
+    }
+
+    @PutMapping("/update/{scheduleDetailId}")
+    public ApiResponse<ScheduleDetailResponse> updateScheduleDetail(@RequestBody CreateScheduleDetailRequest request, @PathVariable Long scheduleDetailId) {
+        ScheduleDetailResponse scheduleDetailResponse = scheduleDetailService.updateScheduleDetail(request, scheduleDetailId);
+        return ApiResponse.<ScheduleDetailResponse>builder().data(scheduleDetailResponse).message("update schedule detail successfully!").build();
+    }
+
+    @DeleteMapping("/delete/{scheduleDetailId}")
+    public ApiResponse<String> deleteScheduleDetail(@PathVariable Long scheduleDetailId) {
+        String message = scheduleDetailService.deleteScheduleDetail(scheduleDetailId);
+        return ApiResponse.<String>builder().data(message).message("delete schedule detail successfully!").build();
+    }
+
 }

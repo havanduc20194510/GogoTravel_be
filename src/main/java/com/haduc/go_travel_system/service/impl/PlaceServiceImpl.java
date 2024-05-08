@@ -20,7 +20,6 @@ import java.util.Map;
 public class PlaceServiceImpl implements PlaceService {
     private final PlaceMapper placeMapper;
     private final PlaceRepository placeRepository;
-
     private final CloudinaryService cloudinaryService;
 
     @Override
@@ -82,4 +81,9 @@ public class PlaceServiceImpl implements PlaceService {
         return places.stream().map(placeMapper::toDto).toList();
     }
 
+    @Override
+    public List<PlaceResponse> getAllPlaces() {
+        List<Place> places = placeRepository.findAll();
+        return places.stream().map(placeMapper::toDto).toList();
+    }
 }

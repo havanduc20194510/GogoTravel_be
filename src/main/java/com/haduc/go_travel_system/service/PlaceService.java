@@ -9,6 +9,8 @@ import java.util.List;
 
 public interface PlaceService {
     PlaceResponse createPlace(CreatePlaceRequest request) throws IOException;
+
+    List<PlaceResponse> getAllPlaces();
     PlaceResponse updatePlace(Long placeId, CreatePlaceRequest request) throws IOException;
     PlaceResponse uploadImage(Long placeId, MultipartFile file) throws IOException;
     String deletePlace(Long placeId);

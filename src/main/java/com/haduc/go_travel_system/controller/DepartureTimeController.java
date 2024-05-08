@@ -22,4 +22,33 @@ public class DepartureTimeController {
                 .data(departureTimeResponse)
                 .build();
     }
+
+    @GetMapping("/get/{departureTimeId}")
+    public ApiResponse<DepartureTimeResponse> getDepartureTime(@PathVariable Long departureTimeId) {
+        DepartureTimeResponse departureTimeResponse = departureTimeService.getDepartureTime(departureTimeId);
+        return ApiResponse.<DepartureTimeResponse>builder()
+                .message("Departure time retrieved successfully")
+                .data(departureTimeResponse)
+                .build();
+    }
+
+    @PutMapping("/update/{departureTimeId}")
+    public ApiResponse<DepartureTimeResponse> updateDepartureTime(@RequestBody CreateDepartureTimeRequest request, @PathVariable Long departureTimeId) {
+        DepartureTimeResponse departureTimeResponse = departureTimeService.updateDepartureTime(request, departureTimeId);
+        return ApiResponse.<DepartureTimeResponse>builder()
+                .message("Departure time updated successfully")
+                .data(departureTimeResponse)
+                .build();
+    }
+
+    @DeleteMapping("/delete/{departureTimeId}")
+    public ApiResponse<String> deleteDepartureTime(@PathVariable Long departureTimeId) {
+        String message = departureTimeService.deleteDepartureTime(departureTimeId);
+        return ApiResponse.<String>builder()
+                .message("Departure time deleted successfully")
+                .data(message)
+                .build();
+    }
+
+
 }
