@@ -29,6 +29,11 @@ public class TourController {
         return ApiResponse.<CreateTourResponse>builder().data(createTourResponse).message("create tour successfully!").build();
     }
 
+    @PutMapping("/increase-view/{tourId}")
+    public ApiResponse<TourResponse> increaseView(@PathVariable String tourId) {
+        TourResponse tourResponse = tourService.increaseView(tourId);
+        return ApiResponse.<TourResponse>builder().data(tourResponse).message("increase view successfully!").build();
+    }
     @PutMapping("/update/{tourId}")
     public ApiResponse<TourResponse> updateTour(@RequestBody CreateTourRequest request, @PathVariable String tourId) {
         TourResponse tourResponse = tourService.updateTour(request, tourId);

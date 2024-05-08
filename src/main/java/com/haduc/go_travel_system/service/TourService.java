@@ -18,6 +18,8 @@ public interface TourService {
 
     TourResponse getTour(String tourId);
 
+    TourResponse increaseView(String tourId);
+
     TourResponse updateTour(CreateTourRequest request, String tourId);
 
     String deleteTour(String tourId);
