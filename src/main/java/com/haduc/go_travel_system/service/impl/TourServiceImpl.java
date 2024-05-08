@@ -40,6 +40,8 @@ public class TourServiceImpl implements TourService {
     @Override
     public CreateTourResponse createTour(CreateTourRequest request) {
         Tour tour = createTourMapper.toTour(request);
+        tour.setTotalView(0L);
+        tour.setRating(0D);
         TourType type = tourTypeRepository.findByName(request.getTourTypeName());
         if(type == null) {
             TourType newType = new TourType();
@@ -51,6 +53,17 @@ public class TourServiceImpl implements TourService {
         }
         Tour savedTour = tourRepository.save(tour);
         return createTourMapper.toDto(savedTour);
+    }
+
+    @Override
+    public TourResponse increaseView(String tourId) {
+        Optional<Tour> tour = tourRepository.findById(tourId);
+        if(tour.isEmpty()) {
+            throw new RuntimeException("Tour not found");
+        }
+        tour.get().setTotalView(tour.get().getTotalView() + 1);
+        Tour updatedTour = tourRepository.save(tour.get());
+        return tourMapper.toDto(updatedTour);
     }
 
     @Override

@@ -42,4 +42,5 @@ public class Tour {
     private List<DepartureTime> departureTimes;
     @OneToMany(mappedBy = "tour", cascade = CascadeType.ALL)
     private List<TourSchedule> schedules;
+    private Long totalView;
 }
