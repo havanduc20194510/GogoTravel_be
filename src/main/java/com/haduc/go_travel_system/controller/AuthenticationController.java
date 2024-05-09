@@ -3,6 +3,7 @@ package com.haduc.go_travel_system.controller;
 import com.haduc.go_travel_system.dto.request.AuthenticationRequest;
 import com.haduc.go_travel_system.dto.request.IntrospectRequest;
 import com.haduc.go_travel_system.dto.request.LogoutRequest;
+import com.haduc.go_travel_system.dto.request.RefreshRequest;
 import com.haduc.go_travel_system.dto.response.ApiResponse;
 import com.haduc.go_travel_system.dto.response.AuthenticationResponse;
 import com.haduc.go_travel_system.dto.response.IntrospectResponse;
@@ -39,6 +40,14 @@ public class AuthenticationController {
     ApiResponse<Void> logout(@RequestBody LogoutRequest request) throws ParseException, JOSEException {
         authenticationService.logout(request);
         return ApiResponse.<Void>builder()
+                .build();
+    }
+
+    @PostMapping("/refresh")
+    ApiResponse<AuthenticationResponse> refreshToken(@RequestBody RefreshRequest request) throws ParseException, JOSEException {
+        var result = authenticationService.refreshToken(request);
+        return ApiResponse.<AuthenticationResponse>builder()
+                .data(result)
                 .build();
     }
 }
