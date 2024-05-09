@@ -44,6 +44,7 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.POST, "/booking/create").permitAll()
                 .requestMatchers(HttpMethod.POST, "/auth/logout").permitAll()
                 .requestMatchers(HttpMethod.POST, "/auth/introspect").permitAll()
+                .requestMatchers(HttpMethod.POST, "/auth/refresh").permitAll()
                 .requestMatchers("/swagger-ui/**",
                         "/swagger-resources/*",
                         "/v3/api-docs/**").permitAll()
