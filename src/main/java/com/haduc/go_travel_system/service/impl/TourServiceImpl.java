@@ -176,9 +176,18 @@ public class TourServiceImpl implements TourService {
     @Override
     public Page<TourResponse> searchTourWithPagination(String destination, String departureLocation, LocalDate startDate, Long numberOfDay, int offset, int pageSize) {
         Page<Tour> tours = tourRepository.findByNameContainsIgnoreCaseAndDepartureLocationContainingIgnoreCaseAndDepartureTimesStartDateGreaterThanAndNumberOfDaysLessThanEqual(destination, departureLocation, startDate, numberOfDay, PageRequest.of(offset - 1, pageSize));
-        if(tours.isEmpty()) {
-            throw new RuntimeException("Tour not found");
-        }
+        return tours.map(tourMapper::toDto);
+    }
+
+    @Override
+    public Page<TourResponse> searchTourWithPaginationAndSort(String destination, String departureLocation, LocalDate startDate, Long numberOfDay, String sortField, int offset, int pageSize) {
+        Page<Tour> tours = tourRepository.findByNameContainsIgnoreCaseAndDepartureLocationContainingIgnoreCaseAndDepartureTimesStartDateGreaterThanAndNumberOfDaysLessThanEqualAndAdultPriceGreaterThanOrBabyPriceLessThanAndTourTypeContainingIgnoreCase(destination, departureLocation, startDate, numberOfDay, 0D, 0D, "", sortField, PageRequest.of(offset - 1, pageSize));
+        return tours.map(tourMapper::toDto);
+    }
+
+    @Override
+    public Page<TourResponse> searchTourWithPaginationAndSortAndFilter(String destination, String departureLocation, LocalDate startDate, Long numberOfDay, String filterType, Double filterPriceMin, Double filterPriceMax, String sortField, int offset, int pageSize) {
+        Page<Tour> tours = tourRepository.findByNameContainsIgnoreCaseAndDepartureLocationContainingIgnoreCaseAndDepartureTimesStartDateGreaterThanAndNumberOfDaysLessThanEqualAndAdultPriceGreaterThanOrBabyPriceLessThanAndTourTypeContainingIgnoreCase(destination, departureLocation, startDate, numberOfDay, filterPriceMin, filterPriceMax, filterType, sortField, PageRequest.of(offset - 1, pageSize));
         return tours.map(tourMapper::toDto);
     }
 }

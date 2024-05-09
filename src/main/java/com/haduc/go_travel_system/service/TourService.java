@@ -34,4 +34,8 @@ public interface TourService {
     List<TourResponse> searchTour(String destination, String departureLocation, LocalDate startDate, Long numberOfDay);
 
     Page<TourResponse> searchTourWithPagination(String destination, String departureLocation, LocalDate startDate, Long numberOfDay, int offset, int pageSize);
+
+    Page<TourResponse> searchTourWithPaginationAndSort(String destination, String departureLocation, LocalDate startDate, Long numberOfDay,String sortField, int offset, int pageSize);
+
+    Page<TourResponse> searchTourWithPaginationAndSortAndFilter(String destination, String departureLocation, LocalDate startDate, Long numberOfDay,String filterType, Double filterPriceMin, Double filterPriceMax,String sortField, int offset, int pageSize);
 }

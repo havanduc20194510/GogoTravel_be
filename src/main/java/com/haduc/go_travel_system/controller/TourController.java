@@ -64,28 +64,39 @@ public class TourController {
         return ApiResponse.<TourResponse>builder().data(tour).message("get tour successfully!").build();
     }
 
-    @GetMapping("list/pagination")
+    @GetMapping("/list/pagination")
     public ApiResponse<List<TourResponse>> getTourWithPagination(@RequestParam(defaultValue = "1") int offset, @RequestParam(defaultValue = "5") int pageSize) {
         List<TourResponse> tours = tourService.findToursWithPagination(offset, pageSize).getContent();
         return ApiResponse.<List<TourResponse>>builder().data(tours).message("get tour with pagination successfully!").build();
     }
 
-    @GetMapping("list/pagination/sort")
+    @GetMapping("/list/pagination/sort")
     public ApiResponse<List<TourResponse>> getTourWithPaginationAndSort(@RequestParam(defaultValue = "1") int offset, @RequestParam(defaultValue = "5") int pageSize, @RequestParam String sortField) {
         List<TourResponse> tours = tourService.findToursWithPaginationAndSort(offset, pageSize, sortField).getContent();
         return ApiResponse.<List<TourResponse>>builder().data(tours).message("get tour with pagination and sort successfully!").build();
     }
 
-    @GetMapping("search")
+    @GetMapping("/search")
     public ApiResponse<List<TourResponse>> searchTour(@RequestParam String destination, @RequestParam String departureLocation, @RequestParam LocalDate startDate, @RequestParam Long numberOfDay) {
         List<TourResponse> tours = tourService.searchTour(destination, departureLocation, startDate, numberOfDay);
         return ApiResponse.<List<TourResponse>>builder().data(tours).message("search tour successfully!").build();
     }
 
-    @GetMapping("search/pagination")
+    @GetMapping("/search/pagination")
     public ApiResponse<List<TourResponse>> searchTourWithPagination(@RequestParam String destination, @RequestParam String departureLocation, @RequestParam LocalDate startDate, @RequestParam Long numberOfDay, @RequestParam(defaultValue = "1") int offset, @RequestParam(defaultValue = "5") int pageSize) {
         List<TourResponse> tours = tourService.searchTourWithPagination(destination, departureLocation, startDate, numberOfDay, offset, pageSize).getContent();
         return ApiResponse.<List<TourResponse>>builder().data(tours).message("search tour with pagination successfully!").build();
     }
 
+    @GetMapping("/search/pagination/sort")
+    public ApiResponse<List<TourResponse>> searchTourWithPaginationAndSort(@RequestParam String destination, @RequestParam String departureLocation, @RequestParam LocalDate startDate, @RequestParam Long numberOfDay, @RequestParam String sortField, @RequestParam(defaultValue = "1") int offset, @RequestParam(defaultValue = "5") int pageSize) {
+        List<TourResponse> tours = tourService.searchTourWithPaginationAndSort(destination, departureLocation, startDate, numberOfDay, sortField, offset, pageSize).getContent();
+        return ApiResponse.<List<TourResponse>>builder().data(tours).message("search tour with pagination and sort successfully!").build();
+    }
+
+    @GetMapping("/search/pagination/sort/filter")
+    public ApiResponse<List<TourResponse>> searchTourWithPaginationAndSortAndFilter(@RequestParam String destination, @RequestParam String departureLocation, @RequestParam LocalDate startDate, @RequestParam Long numberOfDay, @RequestParam(defaultValue = "") String filterType, @RequestParam(defaultValue = "0") Double filterPriceMin, @RequestParam(defaultValue = "0") Double filterPriceMax, @RequestParam String sortField, @RequestParam(defaultValue = "1") int offset, @RequestParam(defaultValue = "5") int pageSize) {
+        List<TourResponse> tours = tourService.searchTourWithPaginationAndSortAndFilter(destination, departureLocation, startDate, numberOfDay, filterType, filterPriceMin, filterPriceMax, sortField, offset, pageSize).getContent();
+        return ApiResponse.<List<TourResponse>>builder().data(tours).message("search tour with pagination and sort and filter successfully!").build();
+    }
 }
