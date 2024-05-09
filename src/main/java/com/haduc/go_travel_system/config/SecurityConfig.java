@@ -32,7 +32,6 @@ public class SecurityConfig {
             "/tour-schedule/list/**",
             "/task/**",
             "/departure-time/**",
-            "/users/create",
             "/places/**",
             "/schedule-detail/**",
     };
@@ -40,11 +39,13 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.authorizeHttpRequests(request -> request.requestMatchers(PUBLIC_ENDPOINTS).permitAll()
+                .requestMatchers(HttpMethod.POST, "/user/create").permitAll()
                 .requestMatchers(HttpMethod.GET, "/booking/**").permitAll()
                 .requestMatchers(HttpMethod.POST, "/booking/create").permitAll()
                 .requestMatchers(HttpMethod.POST, "/auth/logout").permitAll()
                 .requestMatchers(HttpMethod.POST, "/auth/introspect").permitAll()
                 .requestMatchers(HttpMethod.POST, "/auth/refresh").permitAll()
+                .requestMatchers(HttpMethod.POST, "/suggestion/**").permitAll()
                 .requestMatchers("/swagger-ui/**",
                         "/swagger-resources/*",
                         "/v3/api-docs/**").permitAll()

@@ -14,4 +14,5 @@ import java.util.List;
 public interface TourRepository extends JpaRepository<Tour, String>, PagingAndSortingRepository<Tour, String> {
     List<Tour> findByNameContainsIgnoreCaseAndDepartureLocationContainingIgnoreCaseAndDepartureTimesStartDateGreaterThanAndNumberOfDaysLessThanEqual(String destination, String departureLocation, LocalDate startDate, Long numberOfDay);
     Page<Tour> findByNameContainsIgnoreCaseAndDepartureLocationContainingIgnoreCaseAndDepartureTimesStartDateGreaterThanAndNumberOfDaysLessThanEqual(String destination, String departureLocation, LocalDate startDate, Long numberOfDay, Pageable pageable);
+    Page<Tour> findByNameContainsIgnoreCaseAndDepartureLocationContainingIgnoreCaseAndDepartureTimesStartDateGreaterThanAndNumberOfDaysLessThanEqualAndAdultPriceGreaterThanOrBabyPriceLessThanAndTourTypeContainingIgnoreCase(String destination, String departureLocation, LocalDate startDate, Long numberOfDay,Double filterPriceMin, Double filterPriceMax,String filterType, String sortField, Pageable pageable);
 }
