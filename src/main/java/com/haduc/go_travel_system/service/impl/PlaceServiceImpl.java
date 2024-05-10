@@ -8,6 +8,8 @@ import com.haduc.go_travel_system.repository.PlaceRepository;
 import com.haduc.go_travel_system.service.CloudinaryService;
 import com.haduc.go_travel_system.service.PlaceService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -21,6 +23,7 @@ public class PlaceServiceImpl implements PlaceService {
     private final PlaceMapper placeMapper;
     private final PlaceRepository placeRepository;
     private final CloudinaryService cloudinaryService;
+
 
     @Override
     public PlaceResponse createPlace(CreatePlaceRequest request) {
@@ -76,8 +79,8 @@ public class PlaceServiceImpl implements PlaceService {
     }
 
     @Override
-    public List<PlaceResponse> getPlaceByCity(String location) {
-        List<Place> places = placeRepository.findByLocation(location);
+    public List<PlaceResponse> getPlaceByAddress(String address) {
+        List<Place> places = placeRepository.findByLocation(address);
         return places.stream().map(placeMapper::toDto).toList();
     }
 
@@ -86,4 +89,17 @@ public class PlaceServiceImpl implements PlaceService {
         List<Place> places = placeRepository.findAll();
         return places.stream().map(placeMapper::toDto).toList();
     }
+
+    @Override
+    public List<PlaceResponse> searchPlace(String name, String address, String activities) {
+        List<Place> places = placeRepository.findByNameContainsIgnoreCaseAndAddressContainingIgnoreCaseAndActivitiesContainingIgnoreCase(name, address, activities);
+        return places.stream().map(placeMapper::toDto).toList();
+    }
+
+    @Override
+    public Page<PlaceResponse> searchPlace(String name, String address, String activities, int offset, int pageSize) {
+        Page<Place> places = placeRepository.findByNameContainsIgnoreCaseAndAddressContainingIgnoreCaseAndActivitiesContainingIgnoreCase(name, address, activities, PageRequest.of(offset -1 , pageSize));
+        return places.map(placeMapper::toDto);
+    }
+
 }

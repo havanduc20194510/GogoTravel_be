@@ -3,13 +3,11 @@ package com.haduc.go_travel_system.service;
 import com.haduc.go_travel_system.dto.request.CreateTourRequest;
 import com.haduc.go_travel_system.dto.response.CreateTourResponse;
 import com.haduc.go_travel_system.dto.response.TourResponse;
-import com.haduc.go_travel_system.entity.Tour;
 import org.springframework.data.domain.Page;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Locale;
 
 public interface TourService {
     CreateTourResponse createTour(CreateTourRequest request);
@@ -34,8 +32,6 @@ public interface TourService {
     List<TourResponse> searchTour(String destination, String departureLocation, LocalDate startDate, Long numberOfDay);
 
     Page<TourResponse> searchTourWithPagination(String destination, String departureLocation, LocalDate startDate, Long numberOfDay, int offset, int pageSize);
-
-    Page<TourResponse> searchTourWithPaginationAndSort(String destination, String departureLocation, LocalDate startDate, Long numberOfDay,String sortField, int offset, int pageSize);
 
     Page<TourResponse> searchTourWithPaginationAndSortAndFilter(String destination, String departureLocation, LocalDate startDate, Long numberOfDay,String filterType, Double filterPriceMin, Double filterPriceMax,String sortField, int offset, int pageSize);
 }

@@ -178,16 +178,27 @@ public class TourServiceImpl implements TourService {
         Page<Tour> tours = tourRepository.findByNameContainsIgnoreCaseAndDepartureLocationContainingIgnoreCaseAndDepartureTimesStartDateGreaterThanAndNumberOfDaysLessThanEqual(destination, departureLocation, startDate, numberOfDay, PageRequest.of(offset - 1, pageSize));
         return tours.map(tourMapper::toDto);
     }
-
-    @Override
-    public Page<TourResponse> searchTourWithPaginationAndSort(String destination, String departureLocation, LocalDate startDate, Long numberOfDay, String sortField, int offset, int pageSize) {
-        Page<Tour> tours = tourRepository.findByNameContainsIgnoreCaseAndDepartureLocationContainingIgnoreCaseAndDepartureTimesStartDateGreaterThanAndNumberOfDaysLessThanEqualAndAdultPriceGreaterThanOrBabyPriceLessThanAndTourTypeContainingIgnoreCase(destination, departureLocation, startDate, numberOfDay, 0D, 0D, "", sortField, PageRequest.of(offset - 1, pageSize));
-        return tours.map(tourMapper::toDto);
-    }
-
     @Override
     public Page<TourResponse> searchTourWithPaginationAndSortAndFilter(String destination, String departureLocation, LocalDate startDate, Long numberOfDay, String filterType, Double filterPriceMin, Double filterPriceMax, String sortField, int offset, int pageSize) {
-        Page<Tour> tours = tourRepository.findByNameContainsIgnoreCaseAndDepartureLocationContainingIgnoreCaseAndDepartureTimesStartDateGreaterThanAndNumberOfDaysLessThanEqualAndAdultPriceGreaterThanOrBabyPriceLessThanAndTourTypeContainingIgnoreCase(destination, departureLocation, startDate, numberOfDay, filterPriceMin, filterPriceMax, filterType, sortField, PageRequest.of(offset - 1, pageSize));
+        if(sortField == null || sortField.isEmpty() || sortField.contains("name")) {
+            Page<Tour> tours;
+            if(filterType == null || filterType.isEmpty()){
+                tours = tourRepository.findByNameContainsIgnoreCaseAndDepartureLocationContainingIgnoreCaseAndDepartureTimesStartDateGreaterThanAndNumberOfDaysLessThanEqualAndBabyPriceGreaterThanAndAdultPriceLessThanOrderByName(destination, departureLocation, startDate, numberOfDay, filterPriceMin, filterPriceMax, PageRequest.of(offset - 1, pageSize));
+            }else {
+                tours = tourRepository.findByNameContainsIgnoreCaseAndDepartureLocationContainingIgnoreCaseAndDepartureTimesStartDateGreaterThanAndNumberOfDaysLessThanEqualAndBabyPriceGreaterThanAndAdultPriceLessThanAndTourTypeNameContainingIgnoreCaseOrderByName(destination, departureLocation, startDate, numberOfDay, filterPriceMin, filterPriceMax, filterType, PageRequest.of(offset - 1, pageSize));
+            }
+            return tours.map(tourMapper::toDto);
+        }
+        if (sortField.contains("price")) {
+            Page<Tour> tours;
+            if(filterType == null || filterType.isEmpty()){
+                tours = tourRepository.findByNameContainsIgnoreCaseAndDepartureLocationContainingIgnoreCaseAndDepartureTimesStartDateGreaterThanAndNumberOfDaysLessThanEqualAndBabyPriceGreaterThanAndAdultPriceLessThanOrderByAdultPrice(destination, departureLocation, startDate, numberOfDay, filterPriceMin, filterPriceMax, PageRequest.of(offset - 1, pageSize));
+            }else {
+                tours = tourRepository.findByNameContainsIgnoreCaseAndDepartureLocationContainingIgnoreCaseAndDepartureTimesStartDateGreaterThanAndNumberOfDaysLessThanEqualAndBabyPriceGreaterThanAndAdultPriceLessThanAndTourTypeNameContainingIgnoreCaseOrderByAdultPrice(destination, departureLocation, startDate, numberOfDay, filterPriceMin, filterPriceMax, filterType, PageRequest.of(offset - 1, pageSize));
+            }
+            return tours.map(tourMapper::toDto);
+        }
+        Page<Tour> tours = tourRepository.findByNameContainsIgnoreCaseAndDepartureLocationContainingIgnoreCaseAndDepartureTimesStartDateGreaterThanAndNumberOfDaysLessThanEqualAndBabyPriceGreaterThanAndAdultPriceLessThanAndTourTypeNameContainingIgnoreCase(destination, departureLocation, startDate, numberOfDay, filterPriceMin, filterPriceMax, filterType, PageRequest.of(offset - 1, pageSize));
         return tours.map(tourMapper::toDto);
     }
 }
