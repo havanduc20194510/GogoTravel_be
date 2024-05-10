@@ -5,6 +5,7 @@ import com.haduc.go_travel_system.dto.response.ApiResponse;
 import com.haduc.go_travel_system.dto.response.PlaceResponse;
 import com.haduc.go_travel_system.service.PlaceService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -38,8 +39,8 @@ public class PlaceController {
     }
 
     @PostMapping("/upload-image/{id}")
-    public ApiResponse<PlaceResponse> uploadImage(@PathVariable Long id, @RequestPart MultipartFile file) throws IOException {
-        PlaceResponse placeResponse = placeService.uploadImage(id, file);
+    public ApiResponse<PlaceResponse> uploadImage(@PathVariable Long id, @RequestPart("image") MultipartFile image) throws IOException {
+        PlaceResponse placeResponse = placeService.uploadImage(id, image);
         return ApiResponse.<PlaceResponse>builder()
                 .code(200)
                 .message("Image uploaded successfully")
@@ -77,12 +78,12 @@ public class PlaceController {
                 .build();
     }
 
-    @GetMapping("/city/{city}")
-    public ApiResponse<List<PlaceResponse>> getPlaceByCity(@PathVariable String city) {
-        List<PlaceResponse> placeResponses = placeService.getPlaceByCity(city);
+    @GetMapping("/address/{address}")
+    public ApiResponse<List<PlaceResponse>> getPlaceByAddress(@PathVariable String address) {
+        List<PlaceResponse> placeResponses = placeService.getPlaceByAddress(address);
         return ApiResponse.<List<PlaceResponse>>builder()
                 .code(200)
-                .message("Get place by city successfully")
+                .message("Get place by address successfully")
                 .data(placeResponses)
                 .build();
     }
@@ -96,4 +97,26 @@ public class PlaceController {
                 .data(placeResponses)
                 .build();
     }
+
+    @GetMapping("/search")
+    public ApiResponse<List<PlaceResponse>> searchPlace(@RequestParam String name, @RequestParam String address, @RequestParam String activities) {
+        List<PlaceResponse> placeResponses = placeService.searchPlace(name, address, activities);
+        return ApiResponse.<List<PlaceResponse>>builder()
+                .code(200)
+                .message("Search place successfully")
+                .data(placeResponses)
+                .build();
+    }
+
+    @GetMapping("/search/pagination")
+    public ApiResponse<Page<PlaceResponse>> searchPlace(@RequestParam String name, @RequestParam String address, @RequestParam String activities, @RequestParam(defaultValue = "1") int offset, @RequestParam(defaultValue = "5") int pageSize) {
+        Page<PlaceResponse> placeResponses = placeService.searchPlace(name, address, activities,offset,pageSize);
+        return ApiResponse.<Page<PlaceResponse>>builder()
+                .code(200)
+                .message("Search place successfully")
+                .data(placeResponses)
+                .build();
+    }
+
+
 }

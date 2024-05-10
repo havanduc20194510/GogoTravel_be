@@ -32,7 +32,6 @@ public class SecurityConfig {
             "/tour-schedule/list/**",
             "/task/**",
             "/departure-time/**",
-            "/places/**",
             "/schedule-detail/**",
     };
 
@@ -46,8 +45,12 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.POST, "/auth/introspect").permitAll()
                 .requestMatchers(HttpMethod.POST, "/auth/refresh").permitAll()
                 .requestMatchers(HttpMethod.POST, "/suggestion/**").permitAll()
+                .requestMatchers(HttpMethod.GET, "/places/**").permitAll()
+                .requestMatchers(HttpMethod.POST, "/places/create").permitAll()
+                .requestMatchers(HttpMethod.PUT, "/places/update/**").permitAll()
+                .requestMatchers(HttpMethod.POST, "/places/upload-image/**").permitAll()
                 .requestMatchers("/swagger-ui/**",
-                        "/swagger-resources/*",
+                        "/swagger-resources/**",
                         "/v3/api-docs/**").permitAll()
                 .anyRequest().authenticated());
         httpSecurity.oauth2ResourceServer(oauth2 -> oauth2.jwt(
