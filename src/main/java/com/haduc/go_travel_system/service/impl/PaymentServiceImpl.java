@@ -6,6 +6,7 @@ import com.haduc.go_travel_system.service.PaymentService;
 import com.haduc.go_travel_system.util.VNPayUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.io.UnsupportedEncodingException;
@@ -16,18 +17,18 @@ import java.util.*;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class PaymentServiceImpl implements PaymentService {
     @Override
     public VNPayResponse createVnPayPayment(HttpServletRequest request) throws UnsupportedEncodingException {
         String vnp_Version = "2.1.0";
         String vnp_Command = "pay";
         String orderType = "other";
-      /*  long amount = Integer.parseInt(request.getParameter("amount"))* 100L;
+        long amount = Integer.parseInt(request.getParameter("amount"))* 100L;
         String bankCode = request.getParameter("bankCode");
-*/
-        long amount = 100000000;
         String vnp_TxnRef = VNPayUtil.getRandomNumber(8);
-        //String vnp_IpAddr = "127.0.0.1";
+        String vnp_IpAddr = VNPayUtil.getIpAddress(request);
+
 
         String vnp_TmnCode = VNPAYConfig.vnp_TmnCode;
 
@@ -38,13 +39,14 @@ public class PaymentServiceImpl implements PaymentService {
         vnp_Params.put("vnp_Amount", String.valueOf(amount));
         vnp_Params.put("vnp_CurrCode", "VND");
 
-     /*   if (bankCode != null && !bankCode.isEmpty()) {
+        if (bankCode != null && !bankCode.isEmpty()) {
             vnp_Params.put("vnp_BankCode", bankCode);
-        }*/
+        }else {
+            vnp_Params.put("vnp_BankCode","NCB");
+        }
         vnp_Params.put("vnp_TxnRef", vnp_TxnRef);
-       // vnp_Params.put("vnp_OrderInfo", "Thanh toan don hang:" + vnp_TxnRef);
-        // vnp_Params.put("vnp_OrderType", orderType);
-
+        vnp_Params.put("vnp_OrderInfo", "Thanh toan don hang:" + vnp_TxnRef);
+        vnp_Params.put("vnp_OrderType", orderType);
         String locate = request.getParameter("language");
         if (locate != null && !locate.isEmpty()) {
             vnp_Params.put("vnp_Locale", locate);
@@ -52,7 +54,7 @@ public class PaymentServiceImpl implements PaymentService {
             vnp_Params.put("vnp_Locale", "vn");
         }
         vnp_Params.put("vnp_ReturnUrl", VNPAYConfig.vnp_ReturnUrl);
-       // vnp_Params.put("vnp_IpAddr", vnp_IpAddr);
+        vnp_Params.put("vnp_IpAddr", vnp_IpAddr);
 
         Calendar cld = Calendar.getInstance(TimeZone.getTimeZone("Etc/GMT+7"));
         SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmss");
@@ -86,8 +88,9 @@ public class PaymentServiceImpl implements PaymentService {
                 }
             }
         }
-
         String queryUrl = query.toString();
+        log.info(queryUrl);
+        log.info(hashData.toString());
         String vnpSecureHash = VNPayUtil.hmacSHA512(VNPAYConfig.secretKey, hashData.toString());
         queryUrl += "&vnp_SecureHash=" + vnpSecureHash;
         String paymentUrl = VNPAYConfig.vnp_PayUrl + "?" + queryUrl;
