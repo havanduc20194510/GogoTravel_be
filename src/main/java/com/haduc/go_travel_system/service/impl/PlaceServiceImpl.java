@@ -7,9 +7,12 @@ import com.haduc.go_travel_system.mapper.PlaceMapper;
 import com.haduc.go_travel_system.repository.PlaceRepository;
 import com.haduc.go_travel_system.service.CloudinaryService;
 import com.haduc.go_travel_system.service.PlaceService;
+import com.haduc.go_travel_system.util.PlaceSpecification;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -69,20 +72,6 @@ public class PlaceServiceImpl implements PlaceService {
         return placeMapper.toDto(place);
     }
 
-    @Override
-    public List<PlaceResponse> getPlaceByName(String placeName) {
-        List<Place> places = placeRepository.findByName(placeName);
-        if(places.isEmpty()) {
-            throw new RuntimeException("Place not found");
-        }
-        return places.stream().map(placeMapper::toDto).toList();
-    }
-
-    @Override
-    public List<PlaceResponse> getPlaceByAddress(String address) {
-        List<Place> places = placeRepository.findByLocation(address);
-        return places.stream().map(placeMapper::toDto).toList();
-    }
 
     @Override
     public List<PlaceResponse> getAllPlaces() {
@@ -91,14 +80,16 @@ public class PlaceServiceImpl implements PlaceService {
     }
 
     @Override
-    public List<PlaceResponse> searchPlace(String name, String address, String activities) {
-        List<Place> places = placeRepository.findByNameContainsIgnoreCaseAndAddressContainingIgnoreCaseAndActivitiesContainingIgnoreCase(name, address, activities);
-        return places.stream().map(placeMapper::toDto).toList();
+    public Page<PlaceResponse> getAllPlacesAndPagination(int offset, int pageSize) {
+        Page<Place> places = placeRepository.findAll(PageRequest.of(offset -1 , pageSize));
+        return places.map(placeMapper::toDto);
     }
 
     @Override
     public Page<PlaceResponse> searchPlace(String name, String address, String activities, int offset, int pageSize) {
-        Page<Place> places = placeRepository.findByNameContainsIgnoreCaseAndAddressContainingIgnoreCaseAndActivitiesContainingIgnoreCase(name, address, activities, PageRequest.of(offset -1 , pageSize));
+        Pageable pageable = PageRequest.of(offset - 1, pageSize);
+        Specification<Place> spec = PlaceSpecification.searchPlaces(name, address, activities);
+        Page<Place> places = placeRepository.findAll(spec, pageable);
         return places.map(placeMapper::toDto);
     }
 

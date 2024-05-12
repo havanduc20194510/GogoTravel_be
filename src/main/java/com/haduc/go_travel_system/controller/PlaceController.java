@@ -68,26 +68,6 @@ public class PlaceController {
                 .build();
     }
 
-    @GetMapping("/name/{name}")
-    public ApiResponse<List<PlaceResponse>> getPlaceByName(@PathVariable String name) {
-        List<PlaceResponse> placeResponses = placeService.getPlaceByName(name);
-        return ApiResponse.<List<PlaceResponse>>builder()
-                .code(200)
-                .message("Get place by name successfully")
-                .data(placeResponses)
-                .build();
-    }
-
-    @GetMapping("/address/{address}")
-    public ApiResponse<List<PlaceResponse>> getPlaceByAddress(@PathVariable String address) {
-        List<PlaceResponse> placeResponses = placeService.getPlaceByAddress(address);
-        return ApiResponse.<List<PlaceResponse>>builder()
-                .code(200)
-                .message("Get place by address successfully")
-                .data(placeResponses)
-                .build();
-    }
-
     @GetMapping("/all")
     public ApiResponse<List<PlaceResponse>> getAllPlaces() {
         List<PlaceResponse> placeResponses = placeService.getAllPlaces();
@@ -98,25 +78,23 @@ public class PlaceController {
                 .build();
     }
 
-    @GetMapping("/search")
-    public ApiResponse<List<PlaceResponse>> searchPlace(@RequestParam String name, @RequestParam String address, @RequestParam String activities) {
-        List<PlaceResponse> placeResponses = placeService.searchPlace(name, address, activities);
-        return ApiResponse.<List<PlaceResponse>>builder()
+    @GetMapping("/get-all/pagination")
+    public ApiResponse<Page<PlaceResponse>> getAllPlacesAndPagination(@RequestParam(defaultValue = "1") int offset, @RequestParam(defaultValue = "5") int pageSize) {
+        Page<PlaceResponse> placeResponses = placeService.getAllPlacesAndPagination(offset, pageSize);
+        return ApiResponse.<Page<PlaceResponse>>builder()
                 .code(200)
-                .message("Search place successfully")
+                .message("Get all places with pagination successfully")
                 .data(placeResponses)
                 .build();
     }
 
     @GetMapping("/search/pagination")
-    public ApiResponse<Page<PlaceResponse>> searchPlace(@RequestParam String name, @RequestParam String address, @RequestParam String activities, @RequestParam(defaultValue = "1") int offset, @RequestParam(defaultValue = "5") int pageSize) {
-        Page<PlaceResponse> placeResponses = placeService.searchPlace(name, address, activities,offset,pageSize);
+    public ApiResponse<Page<PlaceResponse>> searchPlace(@RequestParam(required = false) String name, @RequestParam(required = false) String address, @RequestParam(required = false) String activities, @RequestParam(defaultValue = "1") int offset, @RequestParam(defaultValue = "5") int pageSize) {
+        Page<PlaceResponse> placeResponses = placeService.searchPlace(name, address, activities, offset, pageSize);
         return ApiResponse.<Page<PlaceResponse>>builder()
                 .code(200)
                 .message("Search place successfully")
                 .data(placeResponses)
                 .build();
     }
-
-
 }

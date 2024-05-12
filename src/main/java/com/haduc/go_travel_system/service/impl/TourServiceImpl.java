@@ -14,10 +14,13 @@ import com.haduc.go_travel_system.repository.TourRepository;
 import com.haduc.go_travel_system.repository.TourTypeRepository;
 import com.haduc.go_travel_system.service.CloudinaryService;
 import com.haduc.go_travel_system.service.TourService;
+import com.haduc.go_travel_system.util.TourSpecification;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -165,40 +168,19 @@ public class TourServiceImpl implements TourService {
     }
 
     @Override
-    public List<TourResponse> searchTour(String destination, String departureLocation, LocalDate startDate, Long numberOfDay) {
-        List<Tour> tours = tourRepository.findByNameContainsIgnoreCaseAndDepartureLocationContainingIgnoreCaseAndDepartureTimesStartDateGreaterThanAndNumberOfDaysLessThanEqual(destination, departureLocation, startDate, numberOfDay);
+    public List<TourResponse> topTourRecommend() {
+        List<Tour> tours = tourRepository.findTop5ByOrderByTotalViewDesc();
         if(tours.isEmpty()) {
-            throw new RuntimeException("Tour not found");
+            throw new RuntimeException("Tours is empty!");
         }
         return tours.stream().map(tourMapper::toDto).collect(Collectors.toList());
     }
 
     @Override
-    public Page<TourResponse> searchTourWithPagination(String destination, String departureLocation, LocalDate startDate, Long numberOfDay, int offset, int pageSize) {
-        Page<Tour> tours = tourRepository.findByNameContainsIgnoreCaseAndDepartureLocationContainingIgnoreCaseAndDepartureTimesStartDateGreaterThanAndNumberOfDaysLessThanEqual(destination, departureLocation, startDate, numberOfDay, PageRequest.of(offset - 1, pageSize));
-        return tours.map(tourMapper::toDto);
-    }
-    @Override
     public Page<TourResponse> searchTourWithPaginationAndSortAndFilter(String destination, String departureLocation, LocalDate startDate, Long numberOfDay, String filterType, Double filterPriceMin, Double filterPriceMax, String sortField, int offset, int pageSize) {
-        if(sortField == null || sortField.isEmpty() || sortField.contains("name")) {
-            Page<Tour> tours;
-            if(filterType == null || filterType.isEmpty()){
-                tours = tourRepository.findByNameContainsIgnoreCaseAndDepartureLocationContainingIgnoreCaseAndDepartureTimesStartDateGreaterThanAndNumberOfDaysLessThanEqualAndBabyPriceGreaterThanAndAdultPriceLessThanOrderByName(destination, departureLocation, startDate, numberOfDay, filterPriceMin, filterPriceMax, PageRequest.of(offset - 1, pageSize));
-            }else {
-                tours = tourRepository.findByNameContainsIgnoreCaseAndDepartureLocationContainingIgnoreCaseAndDepartureTimesStartDateGreaterThanAndNumberOfDaysLessThanEqualAndBabyPriceGreaterThanAndAdultPriceLessThanAndTourTypeNameContainingIgnoreCaseOrderByName(destination, departureLocation, startDate, numberOfDay, filterPriceMin, filterPriceMax, filterType, PageRequest.of(offset - 1, pageSize));
-            }
-            return tours.map(tourMapper::toDto);
-        }
-        if (sortField.contains("price")) {
-            Page<Tour> tours;
-            if(filterType == null || filterType.isEmpty()){
-                tours = tourRepository.findByNameContainsIgnoreCaseAndDepartureLocationContainingIgnoreCaseAndDepartureTimesStartDateGreaterThanAndNumberOfDaysLessThanEqualAndBabyPriceGreaterThanAndAdultPriceLessThanOrderByAdultPrice(destination, departureLocation, startDate, numberOfDay, filterPriceMin, filterPriceMax, PageRequest.of(offset - 1, pageSize));
-            }else {
-                tours = tourRepository.findByNameContainsIgnoreCaseAndDepartureLocationContainingIgnoreCaseAndDepartureTimesStartDateGreaterThanAndNumberOfDaysLessThanEqualAndBabyPriceGreaterThanAndAdultPriceLessThanAndTourTypeNameContainingIgnoreCaseOrderByAdultPrice(destination, departureLocation, startDate, numberOfDay, filterPriceMin, filterPriceMax, filterType, PageRequest.of(offset - 1, pageSize));
-            }
-            return tours.map(tourMapper::toDto);
-        }
-        Page<Tour> tours = tourRepository.findByNameContainsIgnoreCaseAndDepartureLocationContainingIgnoreCaseAndDepartureTimesStartDateGreaterThanAndNumberOfDaysLessThanEqualAndBabyPriceGreaterThanAndAdultPriceLessThanAndTourTypeNameContainingIgnoreCase(destination, departureLocation, startDate, numberOfDay, filterPriceMin, filterPriceMax, filterType, PageRequest.of(offset - 1, pageSize));
+        Pageable pageable = PageRequest.of(offset-1, pageSize, Sort.by(sortField));
+        Specification<Tour> spec = TourSpecification.searchTours(destination, departureLocation, startDate, numberOfDay, filterPriceMin, filterPriceMax, filterType);
+        Page<Tour> tours = tourRepository.findAll(spec, pageable);
         return tours.map(tourMapper::toDto);
     }
 }
