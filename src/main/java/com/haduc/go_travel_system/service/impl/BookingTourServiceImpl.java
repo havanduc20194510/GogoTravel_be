@@ -13,7 +13,6 @@ import com.haduc.go_travel_system.repository.BookingTourRepository;
 import com.haduc.go_travel_system.repository.TourRepository;
 import com.haduc.go_travel_system.repository.UserRepository;
 import com.haduc.go_travel_system.service.BookingTourService;
-import com.haduc.go_travel_system.service.EmailSenderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

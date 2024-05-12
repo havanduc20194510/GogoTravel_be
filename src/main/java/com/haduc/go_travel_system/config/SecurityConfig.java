@@ -49,6 +49,7 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.POST, "/places/create").permitAll()
                 .requestMatchers(HttpMethod.PUT, "/places/update/**").permitAll()
                 .requestMatchers(HttpMethod.POST, "/places/upload-image/**").permitAll()
+                .requestMatchers("payment/**").permitAll()
                 .requestMatchers("/swagger-ui/**",
                         "/swagger-resources/**",
                         "/v3/api-docs/**").permitAll()

@@ -1,4 +1,4 @@
-package com.haduc.go_travel_system.service;
+package com.haduc.go_travel_system.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.mail.SimpleMailMessage;
