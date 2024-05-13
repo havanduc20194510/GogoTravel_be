@@ -7,6 +7,8 @@ import lombok.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 @Configuration
 @Getter
@@ -38,14 +40,15 @@ public class VnPayConfig {
         vnpParamsMap.put("vnp_TmnCode", this.vnp_TmnCode);
         vnpParamsMap.put("vnp_CurrCode", "VND");
         vnpParamsMap.put("vnp_TxnRef", VnPayUtil.getRandomNumber(8));
-        vnpParamsMap.put("vnp_OrderInfo", "Thanh toan don hang:" +  VnPayUtil.getRandomNumber(8));
         vnpParamsMap.put("vnp_OrderType", this.orderType);
         vnpParamsMap.put("vnp_Locale", "vn");
         vnpParamsMap.put("vnp_ReturnUrl", this.vnp_ReturnUrl);
-        String vnp_CreateDate = VnPayTimeHelper.getCurrentTimeInVnPayFormat();
-        String vnp_ExpireDate = VnPayTimeHelper.getExpireTimeInVnPayFormat(15);
-        vnpParamsMap.put("vnp_CreateDate", vnp_CreateDate);
-        vnpParamsMap.put("vnp_ExpireDate", vnp_ExpireDate);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
+        LocalDateTime createdDate = VnPayTimeHelper.getCurrentTimeInVnPayFormat();
+        LocalDateTime expireDate = VnPayTimeHelper.getExpireTimeInVnPayFormat(createdDate,15);
+
+        vnpParamsMap.put("vnp_CreateDate", formatter.format(createdDate));
+        vnpParamsMap.put("vnp_ExpireDate", formatter.format(expireDate));
         return vnpParamsMap;
     }
 }

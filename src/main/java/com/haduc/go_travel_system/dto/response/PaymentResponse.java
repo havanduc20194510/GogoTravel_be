@@ -1,25 +1,21 @@
-package com.haduc.go_travel_system.entity;
+package com.haduc.go_travel_system.dto.response;
 
+import com.haduc.go_travel_system.entity.BookingTour;
 import com.haduc.go_travel_system.enums.PaymentStatus;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
 
-@Entity
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Payment {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class PaymentResponse {
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "booking_id")
-    private BookingTour booking;
+    private String bookingId;
 
     private String username;
 
@@ -47,5 +43,4 @@ public class Payment {
     private LocalDateTime createdAt;
 
     private LocalDateTime updatedAt;
-
 }
