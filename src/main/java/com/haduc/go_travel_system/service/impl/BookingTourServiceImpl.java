@@ -39,13 +39,17 @@ public class BookingTourServiceImpl implements BookingTourService {
         if (!isContain) {
             throw new RuntimeException("Tour not contain this start date");
         }
+        int totalPeople = bookingRequest.getNumberOfAdults()+bookingRequest.getNumberOfChildren()+bookingRequest.getNumberOfBabies();
+        if(totalPeople > tour.getAvailableSeats())
+            throw new RuntimeException("Over people!");
         BookingTour bookingTour = bookingTourMapper.toBookingTour(bookingRequest);
         bookingTour.setTour(tour);
         bookingTour.setUser(user);
         LocalDateTime bookingDate = LocalDateTime.now();
         bookingTour.setBookingDate(bookingDate);
         bookingTour.setStatus(BookingStatus.PENDING);
-        bookingTour.setTotal(tour.getAdultPrice() * bookingRequest.getNumberOfAdults() + tour.getChildPrice() * bookingRequest.getNumberOfChildren() + tour.getBabyPrice() * bookingRequest.getNumberOfBabies());
+        Double totalPrice = tour.getAdultPrice() * bookingRequest.getNumberOfAdults() + tour.getChildPrice() * bookingRequest.getNumberOfChildren() + tour.getBabyPrice() * bookingRequest.getNumberOfBabies();
+        bookingTour.setTotal(totalPrice);
         BookingTour bookingSaved = bookingTourRepository.save(bookingTour);
         emailSenderService.sendSimpleEmail(bookingRequest.getEmail(), "Booking tour success!!!", "Bạn dã dặt tour thành công, mã đặt tour của bạn là: " + bookingSaved.getId() + ".Hãy thanh toán trước 24h trước khi đi tour. Cảm ơn bạn đã sử dụng dịch vụ của chúng tôi.");
         return bookingTourMapper.toDto(bookingSaved);
