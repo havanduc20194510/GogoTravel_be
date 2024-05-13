@@ -4,11 +4,13 @@ import org.springframework.context.annotation.Configuration;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
+import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Configuration
-public class VNPayUtil {
+public class VnPayUtil {
     public static String hmacSHA512(final String key, final String data) {
         try {
 
@@ -54,22 +56,16 @@ public class VNPayUtil {
         }
         return sb.toString();
     }
-   /* public static String getPaymentURL(Map<String, String> paramsMap, boolean encodeKey) {
+    public static String getPaymentURL(Map<String, String> paramsMap, boolean encodeKey) {
         return paramsMap.entrySet().stream()
                 .filter(entry -> entry.getValue() != null && !entry.getValue().isEmpty())
                 .sorted(Map.Entry.comparingByKey())
                 .map(entry ->
-                {
-                    try {
-                        return (encodeKey ? URLEncoder.encode(entry.getKey(),
-                                StandardCharsets.US_ASCII.toString())
+                        (encodeKey ? URLEncoder.encode(entry.getKey(),
+                                StandardCharsets.US_ASCII)
                                 : entry.getKey()) + "=" +
                                 URLEncoder.encode(entry.getValue()
-                                        , StandardCharsets.US_ASCII.toString());
-                    } catch (UnsupportedEncodingException e) {
-                        throw new RuntimeException(e);
-                    }
-                })
+                                        , StandardCharsets.US_ASCII))
                 .collect(Collectors.joining("&"));
-    }*/
+    }
 }

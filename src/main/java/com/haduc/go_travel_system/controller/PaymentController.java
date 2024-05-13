@@ -5,9 +5,7 @@ import com.haduc.go_travel_system.dto.response.VNPayResponse;
 import com.haduc.go_travel_system.service.PaymentService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.UnsupportedEncodingException;
 
@@ -18,11 +16,11 @@ public class PaymentController {
     private final PaymentService paymentService;
 
     @GetMapping("/vn-pay")
-    public ApiResponse<VNPayResponse> pay(HttpServletRequest request) throws UnsupportedEncodingException {
+    public ApiResponse<VNPayResponse> pay(@RequestParam String bookingId, @RequestParam(defaultValue = "NCB") String bankCode,  @RequestParam Double total, @RequestParam(defaultValue = "vn") String language, HttpServletRequest request) throws UnsupportedEncodingException {
         return ApiResponse.<VNPayResponse>builder()
                 .code(200)
                 .message("Success")
-                .data(paymentService.createVnPayPayment(request)).build();
+                .data(paymentService.getVnPayPayment(bookingId,total,bankCode,language,request)).build();
     }
     @GetMapping("/vn-pay-callback")
     public ApiResponse<VNPayResponse> payCallbackHandler(HttpServletRequest request) {
