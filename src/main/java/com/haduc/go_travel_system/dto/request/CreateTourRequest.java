@@ -24,7 +24,6 @@ public class CreateTourRequest {
     private String departureLocation;
     private Double hotelStar;
     private Long numberOfSeats;
-    private Long availableSeats;
     @Enumerated(EnumType.STRING)
     private TourStatus status;
     private String note;

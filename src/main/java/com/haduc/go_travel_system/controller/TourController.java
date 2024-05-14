@@ -5,8 +5,10 @@ import com.haduc.go_travel_system.dto.response.ApiResponse;
 import com.haduc.go_travel_system.dto.response.CreateTourResponse;
 import com.haduc.go_travel_system.dto.response.TourResponse;
 import com.haduc.go_travel_system.service.TourService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -25,6 +27,7 @@ import java.util.List;
 public class TourController {
     private final TourService tourService;
     @PostMapping("/create")
+    @SecurityRequirement(name = "Bearer Authentication")
     public ApiResponse<CreateTourResponse> createTour(@RequestBody CreateTourRequest request) {
         CreateTourResponse createTourResponse = tourService.createTour(request);
         return ApiResponse.<CreateTourResponse>builder().data(createTourResponse).message("create tour successfully!").build();
@@ -36,18 +39,21 @@ public class TourController {
         return ApiResponse.<TourResponse>builder().data(tourResponse).message("increase view successfully!").build();
     }
     @PutMapping("/update/{tourId}")
+    @SecurityRequirement(name = "Bearer Authentication")
     public ApiResponse<TourResponse> updateTour(@RequestBody CreateTourRequest request, @PathVariable String tourId) {
         TourResponse tourResponse = tourService.updateTour(request, tourId);
         return ApiResponse.<TourResponse>builder().data(tourResponse).message("update tour successfully!").build();
     }
 
     @DeleteMapping("/delete/{tourId}")
+    @SecurityRequirement(name = "Bearer Authentication")
     public ApiResponse<String> deleteTour(@PathVariable String tourId) {
         String message = tourService.deleteTour(tourId);
         return ApiResponse.<String>builder().data(message).message("delete tour successfully!").build();
     }
 
     @PostMapping("/upload-image/{tourId}")
+    @SecurityRequirement(name = "Bearer Authentication")
     public ApiResponse<TourResponse> uploadImage(@RequestPart("images") MultipartFile[] images, @PathVariable String tourId) {
         TourResponse tourResponse = tourService.uploadImage(images, tourId);
         return ApiResponse.<TourResponse>builder().data(tourResponse).message("upload image successfully!").build();

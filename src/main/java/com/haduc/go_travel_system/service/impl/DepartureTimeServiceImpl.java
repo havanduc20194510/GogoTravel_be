@@ -24,6 +24,8 @@ public class DepartureTimeServiceImpl implements DepartureTimeService {
     @Override
     public DepartureTimeResponse createDepartureTime(CreateDepartureTimeRequest request) {
         DepartureTime departureTime = departureTimeMapper.toDepartureTime(request);
+        departureTime.setBookedSeats(0L);
+        departureTime.setAvailable(true);
         Optional<Tour> tour = tourRepository.findById(request.getTourId());
         if (tour.isPresent()) {
             departureTime.setTour(tour.get());
@@ -50,6 +52,7 @@ public class DepartureTimeServiceImpl implements DepartureTimeService {
         if (tour.isPresent()) {
             departureTime.setTour(tour.get());
             departureTime.setStartDate(request.getStartDate());
+            departureTime.setNumberOfSeats(request.getNumberOfSeats());
             DepartureTime savedDepartureTime = departureTimeRepository.save(departureTime);
             return departureTimeMapper.toDto(savedDepartureTime);
         }else {
@@ -67,5 +70,19 @@ public class DepartureTimeServiceImpl implements DepartureTimeService {
     public List<DepartureTimeResponse> getDepartureTimeByTourId(String tourId) {
         List<DepartureTime> departureTime = departureTimeRepository.findByTourTourId(tourId);
         return departureTime.stream().map(departureTimeMapper::toDto).toList();
+    }
+
+    @Override
+    public void updateBookedSeats(Long departureTimeId, Long bookedSeats) {
+        DepartureTime departureTime = departureTimeRepository.findById(departureTimeId).orElseThrow(() -> new RuntimeException("Departure time not found"));
+        departureTime.setBookedSeats(bookedSeats);
+        departureTimeRepository.save(departureTime);
+    }
+
+    @Override
+    public void updateAvailable(Long departureTimeId) {
+        DepartureTime departureTime = departureTimeRepository.findById(departureTimeId).orElseThrow(() -> new RuntimeException("Departure time not found"));
+        departureTime.setAvailable(departureTime.getBookedSeats() < departureTime.getNumberOfSeats());
+        departureTimeRepository.save(departureTime);
     }
 }

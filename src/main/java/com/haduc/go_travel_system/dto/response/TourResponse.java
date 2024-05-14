@@ -29,13 +29,12 @@ public class TourResponse {
     private String departureLocation;
     private Double hotelStar;
     private Long numberOfSeats;
-    private Long availableSeats;
     @Enumerated(EnumType.STRING)
     private TourStatus status;
     private String note;
     private Long totalView;
     private TourType tourType;
-    private List<TourImageReponse> images;
+    private List<TourImageResponse> images;
     private List<DepartureTimeResponse> departureTimes;
     private List<TourScheduleResponse> schedules;
 }

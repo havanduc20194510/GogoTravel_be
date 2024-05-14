@@ -1,15 +1,13 @@
 package com.haduc.go_travel_system.service.impl;
 
-import com.haduc.go_travel_system.dto.request.AuthenticationRequest;
-import com.haduc.go_travel_system.dto.request.IntrospectRequest;
-import com.haduc.go_travel_system.dto.request.LogoutRequest;
-import com.haduc.go_travel_system.dto.request.RefreshRequest;
+import com.haduc.go_travel_system.dto.request.*;
 import com.haduc.go_travel_system.dto.response.AuthenticationResponse;
 import com.haduc.go_travel_system.dto.response.IntrospectResponse;
 import com.haduc.go_travel_system.dto.response.UserResponse;
 import com.haduc.go_travel_system.entity.InvalidatedToken;
 import com.haduc.go_travel_system.entity.User;
 import com.haduc.go_travel_system.enums.ErrorCode;
+import com.haduc.go_travel_system.enums.Role;
 import com.haduc.go_travel_system.exception.AppException;
 import com.haduc.go_travel_system.mapper.UserMapper;
 import com.haduc.go_travel_system.repository.InvalidatedTokenRepository;
@@ -32,9 +30,7 @@ import org.springframework.util.CollectionUtils;
 import java.text.ParseException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.Date;
-import java.util.StringJoiner;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -110,7 +106,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     public String buildScope(User user) {
         StringJoiner stringJoiner = new StringJoiner(" ");
         if(!CollectionUtils.isEmpty(user.getRoles())) {
-            user.getRoles().forEach(stringJoiner::add);
+            user.getRoles().forEach(role -> stringJoiner.add(role.name()));
         }
         return stringJoiner.toString();
     }
@@ -161,5 +157,19 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         } catch (AppException e) {
             log.info("Token already expired");
         }
+    }
+
+    @Override
+    public UserResponse register(RegisterRequest request) {
+        if(userRepository.existsByUsername(request.getUsername())){
+            throw new AppException(ErrorCode.USER_EXISTED);
+        }
+
+        User user = userMapper.toUser(request);
+        user.setPassword(new BCryptPasswordEncoder(10).encode(request.getPassword()));
+        HashSet<Role> roles = new HashSet<>();
+        roles.add(Role.USER);
+        user.setRoles(roles);
+        return userMapper.toDto(userRepository.save(user));
     }
 }

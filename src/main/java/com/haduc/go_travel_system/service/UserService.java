@@ -16,4 +16,5 @@ public interface UserService {
 
     List<UserResponse> getUsers();
     UserResponse getMyProfile();
+
 }

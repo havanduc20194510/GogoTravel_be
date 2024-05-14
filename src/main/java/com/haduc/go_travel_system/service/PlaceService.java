@@ -13,7 +13,7 @@ public interface PlaceService {
     List<PlaceResponse> getAllPlaces();
     Page<PlaceResponse> getAllPlacesAndPagination(int offset, int pageSize);
     PlaceResponse updatePlace(Long placeId, CreatePlaceRequest request) throws IOException;
-    PlaceResponse uploadImage(Long placeId, MultipartFile file) throws IOException;
+    PlaceResponse uploadImage(Long placeId, MultipartFile[] files) throws IOException;
     String deletePlace(Long placeId);
     PlaceResponse getPlace(Long placeId);
     Page<PlaceResponse> searchPlace(String name, String address, String activities, int offset, int pageSize);

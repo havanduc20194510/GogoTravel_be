@@ -4,6 +4,7 @@ import com.haduc.go_travel_system.dto.response.ApiResponse;
 import com.haduc.go_travel_system.dto.response.VnPayResponse;
 import com.haduc.go_travel_system.dto.response.VnPayResponseCode;
 import com.haduc.go_travel_system.service.PaymentService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +16,8 @@ import java.util.Map;
 @RestController
 @RequestMapping("/payment")
 @RequiredArgsConstructor
+@SecurityRequirement(name = "Bearer Authentication")
+@CrossOrigin(origins = "*")
 public class PaymentController {
     private final PaymentService paymentService;
 

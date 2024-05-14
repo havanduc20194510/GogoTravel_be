@@ -4,6 +4,8 @@ package com.haduc.go_travel_system.dto.response;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 
+import java.util.List;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -15,7 +17,7 @@ public class PlaceResponse {
     private String name;
     private String description;
     private String address;
-    private String image;
+    private List<PlaceImageResponse> images;
     private String location;
     private String timeOpen;
     private String timeClose;

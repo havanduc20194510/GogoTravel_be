@@ -5,12 +5,16 @@ import com.haduc.go_travel_system.dto.response.PaymentResponse;
 import com.haduc.go_travel_system.dto.response.VnPayResponse;
 import com.haduc.go_travel_system.dto.response.VnPayResponseCode;
 import com.haduc.go_travel_system.entity.BookingTour;
+import com.haduc.go_travel_system.entity.DepartureTime;
 import com.haduc.go_travel_system.entity.Payment;
 import com.haduc.go_travel_system.enums.BookingStatus;
 import com.haduc.go_travel_system.enums.PaymentStatus;
 import com.haduc.go_travel_system.mapper.PaymentMapper;
 import com.haduc.go_travel_system.repository.BookingTourRepository;
+import com.haduc.go_travel_system.repository.DepartureTimeRepository;
 import com.haduc.go_travel_system.repository.PaymentRepository;
+import com.haduc.go_travel_system.service.BookingTourService;
+import com.haduc.go_travel_system.service.DepartureTimeService;
 import com.haduc.go_travel_system.service.PaymentService;
 import com.haduc.go_travel_system.util.VnPayUtil;
 import jakarta.servlet.http.HttpServletRequest;
@@ -28,12 +32,16 @@ import java.util.*;
 @RequiredArgsConstructor
 @Slf4j
 public class PaymentServiceImpl implements PaymentService {
+    private final DepartureTimeRepository departureTimeRepository;
     private final BookingTourRepository bookingTourRepository;
 
     private final PaymentRepository paymentRepository;
 
 
     private final PaymentMapper paymentMapper;
+
+
+    private final DepartureTimeService departureTimeService;
 
     private final VnPayConfig vnPayConfig;
 
@@ -88,6 +96,14 @@ public class PaymentServiceImpl implements PaymentService {
                 // update status booking
                 BookingTour bookingTour = bookingTourRepository.findById(bookingId).orElseThrow(()->new RuntimeException("Booking not found!!!"));
                 bookingTour.setStatus(BookingStatus.CONFIRMED);
+                int totalSeats = bookingTour.getNumberOfAdults() + bookingTour.getNumberOfChildren() + bookingTour.getNumberOfBabies();
+                // find departure time
+                DepartureTime departureTime = departureTimeRepository.findByTourTourIdAndStartDate(bookingTour.getTour().getTourId(), bookingTour.getStartDate());
+                // update booked seats
+                departureTimeService.updateBookedSeats(departureTime.getId(), departureTime.getBookedSeats() + totalSeats);
+                // update available
+                departureTimeService.updateAvailable(departureTime.getId());
+
                 bookingTourRepository.save(bookingTour);
                 Payment payment = Payment.builder()
                         .booking(bookingTour)

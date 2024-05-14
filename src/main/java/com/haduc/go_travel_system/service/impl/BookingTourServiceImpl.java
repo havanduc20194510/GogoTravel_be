@@ -10,6 +10,7 @@ import com.haduc.go_travel_system.entity.User;
 import com.haduc.go_travel_system.enums.BookingStatus;
 import com.haduc.go_travel_system.mapper.BookingTourMapper;
 import com.haduc.go_travel_system.repository.BookingTourRepository;
+import com.haduc.go_travel_system.repository.DepartureTimeRepository;
 import com.haduc.go_travel_system.repository.TourRepository;
 import com.haduc.go_travel_system.repository.UserRepository;
 import com.haduc.go_travel_system.service.BookingTourService;
@@ -27,6 +28,7 @@ public class BookingTourServiceImpl implements BookingTourService {
     private final UserRepository userRepository;
 
     private final EmailSenderService emailSenderService;
+    private final DepartureTimeRepository departureTimeRepository;
 
     @Override
     public BookingResponse createBookingTour(BookingRequest bookingRequest) {
@@ -40,8 +42,10 @@ public class BookingTourServiceImpl implements BookingTourService {
             throw new RuntimeException("Tour not contain this start date");
         }
         int totalPeople = bookingRequest.getNumberOfAdults()+bookingRequest.getNumberOfChildren()+bookingRequest.getNumberOfBabies();
-        if(totalPeople > tour.getAvailableSeats())
+        DepartureTime departureTime = departureTimeRepository.findByTourTourIdAndStartDate(bookingRequest.getTourId(), bookingRequest.getStartDate());
+        if(totalPeople > (departureTime.getNumberOfSeats() - departureTime.getBookedSeats())){
             throw new RuntimeException("Over people!");
+        }
         BookingTour bookingTour = bookingTourMapper.toBookingTour(bookingRequest);
         bookingTour.setTour(tour);
         bookingTour.setUser(user);
@@ -55,6 +59,7 @@ public class BookingTourServiceImpl implements BookingTourService {
         return bookingTourMapper.toDto(bookingSaved);
     }
 
+
     @Override
     public BookingResponse updateBookingTour(UpdateBookingRequest updateBookingRequest, String id) {
         BookingTour bookingTour = bookingTourRepository.findById(id)
@@ -65,6 +70,11 @@ public class BookingTourServiceImpl implements BookingTourService {
         boolean isContain = departureTimes.stream().anyMatch(departureTime -> departureTime.getStartDate().equals(updateBookingRequest.getStartDate()));
         if (!isContain) {
             throw new RuntimeException("Tour not contain this start date");
+        }
+        int totalPeople = updateBookingRequest.getNumberOfAdults()+updateBookingRequest.getNumberOfChildren()+updateBookingRequest.getNumberOfBabies();
+        DepartureTime departureTime = departureTimeRepository.findByTourTourIdAndStartDate(bookingTour.getTour().getTourId(), updateBookingRequest.getStartDate());
+        if(totalPeople > (departureTime.getNumberOfSeats() - departureTime.getBookedSeats())){
+            throw new RuntimeException("Over people!");
         }
         bookingTour.setStartDate(updateBookingRequest.getStartDate());
         bookingTour.setNumberOfAdults(updateBookingRequest.getNumberOfAdults());

@@ -22,34 +22,24 @@ public class SecurityConfig {
     @Autowired
     private CustomJwtDecoder customJwtDecoder;
 
-    private final String[] PUBLIC_ENDPOINTS = {
-            "/auth/token",
-            "/auth/introspect",
-            "/tour/list/**",
-            "/tour/search/**",
-            "/tour/{id}",
-            "/tour/**",
-            "/tour-schedule/list/**",
-            "/task/**",
-            "/departure-time/**",
-            "/schedule-detail/**",
-    };
-
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
-        httpSecurity.authorizeHttpRequests(request -> request.requestMatchers(PUBLIC_ENDPOINTS).permitAll()
-                .requestMatchers(HttpMethod.POST, "/user/create").permitAll()
-                .requestMatchers(HttpMethod.GET, "/booking/**").permitAll()
-                .requestMatchers(HttpMethod.POST, "/booking/create").permitAll()
+        httpSecurity.authorizeHttpRequests(request -> request
+                .requestMatchers(HttpMethod.GET, "/").permitAll()
                 .requestMatchers(HttpMethod.POST, "/auth/logout").permitAll()
                 .requestMatchers(HttpMethod.POST, "/auth/introspect").permitAll()
                 .requestMatchers(HttpMethod.POST, "/auth/refresh").permitAll()
+                .requestMatchers(HttpMethod.POST, "/auth/register").permitAll()
                 .requestMatchers(HttpMethod.POST, "/suggestion/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/places/**").permitAll()
-                .requestMatchers(HttpMethod.POST, "/places/create").permitAll()
-                .requestMatchers(HttpMethod.PUT, "/places/update/**").permitAll()
-                .requestMatchers(HttpMethod.POST, "/places/upload-image/**").permitAll()
-                .requestMatchers("payment/**").permitAll()
+                .requestMatchers(HttpMethod.GET, "/tour/**").permitAll()
+                .requestMatchers(HttpMethod.PUT, "/tour/increase-view/**").permitAll()
+                .requestMatchers(HttpMethod.GET, "/tour-schedule/**").permitAll()
+                .requestMatchers(HttpMethod.GET, "/task/**").permitAll()
+                .requestMatchers(HttpMethod.GET, "/schedule-detail/**").permitAll()
+                .requestMatchers(HttpMethod.GET, "/departure-time/**").permitAll()
+                .requestMatchers(HttpMethod.GET, "/tour-type/**").permitAll()
+
                 .requestMatchers("/swagger-ui/**",
                         "/swagger-resources/**",
                         "/v3/api-docs/**").permitAll()
@@ -58,6 +48,7 @@ public class SecurityConfig {
                 jwtConfigurer -> jwtConfigurer.decoder(customJwtDecoder)
                 .jwtAuthenticationConverter(jwtAuthenticationConverter())));
         httpSecurity.csrf(AbstractHttpConfigurer::disable);
+        httpSecurity.cors(AbstractHttpConfigurer::disable);
         return httpSecurity.build();
     }
 

@@ -1,6 +1,7 @@
 package com.haduc.go_travel_system.entity;
 
 import jakarta.persistence.*;
+import jdk.jfr.Name;
 import lombok.*;
 
 import java.time.LocalDate;
@@ -18,4 +19,13 @@ public class DepartureTime {
     @JoinColumn(name = "tourId")
     private Tour tour;
     private LocalDate startDate;
+    private Long numberOfSeats;
+
+    @Builder.Default
+    private Long bookedSeats = 0L;
+
+    @Builder.Default
+    // dat ten truong trong db la is_available
+    @Column(name = "is_available")
+    private boolean available = true;
 }

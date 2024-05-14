@@ -12,4 +12,6 @@ import java.util.List;
 public interface DepartureTimeRepository extends JpaRepository<DepartureTime, Long> {
     boolean existsByTourAndStartDate(Tour tour, LocalDate startDate);
     List<DepartureTime> findByTourTourId(String tourId);
+
+    DepartureTime findByTourTourIdAndStartDate(String tourId, LocalDate startDate);
 }
