@@ -22,5 +22,6 @@ public class User {
     private String email;
     private String phone;
     private String address;
-    private Set<String> roles;
+    @Enumerated(EnumType.STRING)
+    private Set<Role> roles;
 }

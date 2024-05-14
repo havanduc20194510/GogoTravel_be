@@ -4,6 +4,7 @@ import com.haduc.go_travel_system.dto.request.CreatePlaceRequest;
 import com.haduc.go_travel_system.dto.response.ApiResponse;
 import com.haduc.go_travel_system.dto.response.PlaceResponse;
 import com.haduc.go_travel_system.service.PlaceService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
@@ -19,6 +20,7 @@ import java.util.List;
 public class PlaceController {
     private final PlaceService placeService;
     @PostMapping("/create")
+    @SecurityRequirement(name = "Bearer Authentication")
     public ApiResponse<PlaceResponse> createPlace(@RequestBody CreatePlaceRequest request) throws IOException {
         PlaceResponse placeResponse = placeService.createPlace(request);
         return ApiResponse.<PlaceResponse>builder()
@@ -29,6 +31,7 @@ public class PlaceController {
     }
 
     @PutMapping("/update/{id}")
+    @SecurityRequirement(name = "Bearer Authentication")
     public ApiResponse<PlaceResponse> updatePlace(@PathVariable Long id, @RequestPart CreatePlaceRequest request) throws IOException {
         PlaceResponse placeResponse = placeService.updatePlace(id, request);
         return ApiResponse.<PlaceResponse>builder()
@@ -39,8 +42,9 @@ public class PlaceController {
     }
 
     @PostMapping("/upload-image/{id}")
-    public ApiResponse<PlaceResponse> uploadImage(@PathVariable Long id, @RequestPart("image") MultipartFile image) throws IOException {
-        PlaceResponse placeResponse = placeService.uploadImage(id, image);
+    @SecurityRequirement(name = "Bearer Authentication")
+    public ApiResponse<PlaceResponse> uploadImage(@PathVariable Long id, @RequestPart("images") MultipartFile[] images) throws IOException {
+        PlaceResponse placeResponse = placeService.uploadImage(id, images);
         return ApiResponse.<PlaceResponse>builder()
                 .code(200)
                 .message("Image uploaded successfully")
@@ -49,6 +53,7 @@ public class PlaceController {
     }
 
     @DeleteMapping("/delete/{id}")
+    @SecurityRequirement(name = "Bearer Authentication")
     public ApiResponse<String> deletePlace(@PathVariable Long id) {
         String message = placeService.deletePlace(id);
         return ApiResponse.<String>builder()

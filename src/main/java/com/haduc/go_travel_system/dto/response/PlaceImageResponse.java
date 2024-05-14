@@ -7,7 +7,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class TourImageReponse {
+public class PlaceImageResponse {
     private Long id;
     private String url;
 }

@@ -34,5 +34,5 @@ public class CreateTourResponse {
     private TourStatus status;
     private String note;
     private TourType tourType;
-    private List<TourImageReponse> images;
+    private List<TourImageResponse> images;
 }

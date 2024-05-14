@@ -3,7 +3,9 @@ package com.haduc.go_travel_system.service.impl;
 import com.haduc.go_travel_system.dto.request.CreatePlaceRequest;
 import com.haduc.go_travel_system.dto.response.PlaceResponse;
 import com.haduc.go_travel_system.entity.Place;
+import com.haduc.go_travel_system.entity.PlaceImage;
 import com.haduc.go_travel_system.mapper.PlaceMapper;
+import com.haduc.go_travel_system.repository.PlaceImageRepository;
 import com.haduc.go_travel_system.repository.PlaceRepository;
 import com.haduc.go_travel_system.service.CloudinaryService;
 import com.haduc.go_travel_system.service.PlaceService;
@@ -26,6 +28,7 @@ public class PlaceServiceImpl implements PlaceService {
     private final PlaceMapper placeMapper;
     private final PlaceRepository placeRepository;
     private final CloudinaryService cloudinaryService;
+    private final PlaceImageRepository placeImageRepository;
 
 
     @Override
@@ -51,12 +54,18 @@ public class PlaceServiceImpl implements PlaceService {
     }
 
     @Override
-    public PlaceResponse uploadImage(Long placeId, MultipartFile file) throws IOException {
+    public PlaceResponse uploadImage(Long placeId, MultipartFile[] files) throws IOException {
         Place place = placeRepository.findById(placeId).orElseThrow(() -> new RuntimeException("Place not found"));
-        Map uploadResult = cloudinaryService.uploadImage(file);
-        place.setImage(uploadResult.get("url").toString());
-        Place placeSaved = placeRepository.save(place);
-        return placeMapper.toDto(placeSaved);
+        for (MultipartFile file : files) {
+            Map uploadResult = cloudinaryService.uploadImage(file);
+            PlaceImage placeImage = new PlaceImage();
+            placeImage.setUrl(uploadResult.get("url").toString());
+            placeImage.setPlace(place);
+            placeImageRepository.save(placeImage);
+        }
+        List<PlaceImage> placeImages = placeImageRepository.findByPlaceId(place.getId());
+        place.setImages(placeImages);
+        return placeMapper.toDto(place);
     }
 
     @Override

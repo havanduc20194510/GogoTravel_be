@@ -2,7 +2,7 @@ package com.haduc.go_travel_system.service.impl;
 
 import com.haduc.go_travel_system.dto.request.CreateTourRequest;
 import com.haduc.go_travel_system.dto.response.CreateTourResponse;
-import com.haduc.go_travel_system.dto.response.TourImageReponse;
+import com.haduc.go_travel_system.dto.response.TourImageResponse;
 import com.haduc.go_travel_system.dto.response.TourResponse;
 import com.haduc.go_travel_system.entity.Tour;
 import com.haduc.go_travel_system.entity.TourImage;
@@ -116,7 +116,7 @@ public class TourServiceImpl implements TourService {
             }
         });
         List<TourImage> tourImages = tourImageRepository.findByTourTourId(tourId);
-        List<TourImageReponse> imageOfTour = tourImages.stream().map(tourImage -> TourImageReponse.builder().id(tourImage.getId()).url(tourImage.getUrl()).build()).toList();
+        List<TourImageResponse> imageOfTour = tourImages.stream().map(tourImage -> TourImageResponse.builder().id(tourImage.getId()).url(tourImage.getUrl()).build()).toList();
         tourResponse.setImages(imageOfTour);
         return tourResponse;
     }
@@ -135,8 +135,6 @@ public class TourServiceImpl implements TourService {
         tour.setVehicle(request.getVehicle());
         tour.setDepartureLocation(request.getDepartureLocation());
         tour.setHotelStar(request.getHotelStar());
-        tour.setNumberOfSeats(request.getNumberOfSeats());
-        tour.setAvailableSeats(request.getAvailableSeats());
         tour.setStatus(request.getStatus());
         tour.setNote(request.getNote());
         TourType type = tourTypeRepository.findByName(request.getTourTypeName());

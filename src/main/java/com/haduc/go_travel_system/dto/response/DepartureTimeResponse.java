@@ -12,4 +12,7 @@ import java.time.LocalDate;
 public class DepartureTimeResponse {
     private Long id;
     private LocalDate startDate;
+    private Long numberOfSeats;
+    private Long bookedSeats;
+    private boolean available;
 }

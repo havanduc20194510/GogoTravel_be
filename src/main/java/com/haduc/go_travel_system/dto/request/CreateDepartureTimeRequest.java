@@ -14,4 +14,5 @@ import java.time.LocalDate;
 public class CreateDepartureTimeRequest {
     private String tourId;
     private LocalDate startDate;
+    private Long numberOfSeats;
 }

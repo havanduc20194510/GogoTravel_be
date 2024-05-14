@@ -5,6 +5,7 @@ import com.haduc.go_travel_system.dto.request.UpdateBookingRequest;
 import com.haduc.go_travel_system.dto.response.ApiResponse;
 import com.haduc.go_travel_system.dto.response.BookingResponse;
 import com.haduc.go_travel_system.service.BookingTourService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -14,10 +15,12 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/booking")
+@SecurityRequirement(name = "Bearer Authentication")
 @CrossOrigin(origins = "*")
 public class BookingController {
     private final BookingTourService bookingTourService;
     @PostMapping("/create")
+    @SecurityRequirement(name = "Bearer Authentication")
     public ApiResponse<BookingResponse> createBookingTour(@RequestBody @Valid BookingRequest bookingRequest) {
         BookingResponse bookingResponse = bookingTourService.createBookingTour(bookingRequest);
         return ApiResponse.<BookingResponse>builder()

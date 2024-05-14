@@ -18,6 +18,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 
@@ -38,8 +39,24 @@ public class UserServiceImpl implements UserService {
 
         User user = userMapper.toUser(request);
         user.setPassword(passwordEncoder.encode(request.getPassword()));
-        HashSet<String> roles = new HashSet<>();
-        roles.add(Role.USER.name());
+
+        HashSet<Role> roles = new HashSet<>();
+        if(request.getRoles() != null){
+            // change string to set
+            for(String role : request.getRoles()){
+                // lay tat ca gia tri cua enum Role
+                List<Role> roleList = Arrays.asList(Role.values());
+                // kiem tra xem role co ton tai trong enum Role khong
+                boolean checkRoleExist = roleList.stream().anyMatch(roleEnum -> roleEnum.name().equals(role));
+                if(checkRoleExist) {
+                    roles.add(Role.valueOf(role));
+                } else {
+                    throw new RuntimeException("Role not valid");
+                }
+            }
+        }
+
+        roles.add(Role.USER);
         user.setRoles(roles);
         return userMapper.toDto(userRepository.save(user));
     }
@@ -85,4 +102,5 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
         return userMapper.toDto(user);
     }
+
 }
