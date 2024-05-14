@@ -2,23 +2,16 @@ package com.haduc.go_travel_system.util;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
 
 public class VnPayTimeHelper {
-    public static String getCurrentTimeInVnPayFormat() {
+    public static LocalDateTime getCurrentTimeInVnPayFormat() {
         // get time in server
-        LocalDateTime currentTime = LocalDateTime.now(ZoneId.systemDefault());
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
-        return formatter.format(currentTime);
+        return LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh"));
     }
 
-    public static String getExpireTimeInVnPayFormat(int minutesToAdd) {
-        LocalDateTime currentTime = LocalDateTime.now(ZoneId.systemDefault());
-
-        LocalDateTime expireTime = currentTime.plusMinutes(minutesToAdd);
-
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
-
-        return formatter.format(expireTime);
+    public static LocalDateTime getExpireTimeInVnPayFormat(LocalDateTime createdDate, int minutesToAdd) {
+        createdDate.atZone(ZoneId.of("Asia/Ho_Chi_Minh"))
+                .withZoneSameInstant(ZoneId.of("Asia/Singapore"));
+        return createdDate.plusMinutes(minutesToAdd);
     }
 }

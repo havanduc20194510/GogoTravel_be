@@ -1,5 +1,6 @@
 package com.haduc.go_travel_system.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 
 @Getter
@@ -7,8 +8,8 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class VNPayResponse {
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public class VnPayResponseCode {
     public String code;
     public String message;
-    public String paymentUrl;
 }
