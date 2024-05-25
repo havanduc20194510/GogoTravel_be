@@ -18,6 +18,5 @@ public class CreateTaskRequest {
     private String description;
     private Long coin;
     private String reward;
-    private LocalDate deadline;
     private String taskTypeName;
 }

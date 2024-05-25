@@ -4,6 +4,8 @@ import com.haduc.go_travel_system.dto.request.CreateDepartureTimeRequest;
 import com.haduc.go_travel_system.dto.response.DepartureTimeResponse;
 import com.haduc.go_travel_system.entity.DepartureTime;
 import com.haduc.go_travel_system.entity.Tour;
+import com.haduc.go_travel_system.enums.ErrorCode;
+import com.haduc.go_travel_system.exception.AppException;
 import com.haduc.go_travel_system.mapper.DepartureTimeMapper;
 import com.haduc.go_travel_system.repository.DepartureTimeRepository;
 import com.haduc.go_travel_system.repository.TourRepository;
@@ -30,24 +32,24 @@ public class DepartureTimeServiceImpl implements DepartureTimeService {
         if (tour.isPresent()) {
             departureTime.setTour(tour.get());
             if(departureTimeRepository.existsByTourAndStartDate(departureTime.getTour(), departureTime.getStartDate())){
-                throw new RuntimeException("Departure time existed");
+                throw new AppException(ErrorCode.DEPARTURE_TIME_EXISTED);
             }
             DepartureTime savedDepartureTime = departureTimeRepository.save(departureTime);
             return departureTimeMapper.toDto(savedDepartureTime);
         }else {
-            throw new RuntimeException("Tour not found");
+            throw new AppException(ErrorCode.TOUR_NOT_FOUND);
         }
     }
 
     @Override
     public DepartureTimeResponse getDepartureTime(Long departureTimeId) {
-        DepartureTime departureTime = departureTimeRepository.findById(departureTimeId).orElseThrow(() -> new RuntimeException("Departure time not found"));
+        DepartureTime departureTime = departureTimeRepository.findById(departureTimeId).orElseThrow(() -> new AppException(ErrorCode.DEPARTURE_TIME_NOT_FOUND));
         return departureTimeMapper.toDto(departureTime);
     }
 
     @Override
     public DepartureTimeResponse updateDepartureTime(CreateDepartureTimeRequest request, Long departureTimeId) {
-        DepartureTime departureTime = departureTimeRepository.findById(departureTimeId).orElseThrow(() -> new RuntimeException("Departure time not found"));
+        DepartureTime departureTime = departureTimeRepository.findById(departureTimeId).orElseThrow(() -> new AppException(ErrorCode.DEPARTURE_TIME_NOT_FOUND));
         Optional<Tour> tour = tourRepository.findById(request.getTourId());
         if (tour.isPresent()) {
             departureTime.setTour(tour.get());
@@ -56,7 +58,7 @@ public class DepartureTimeServiceImpl implements DepartureTimeService {
             DepartureTime savedDepartureTime = departureTimeRepository.save(departureTime);
             return departureTimeMapper.toDto(savedDepartureTime);
         }else {
-            throw new RuntimeException("Tour not found");
+            throw new AppException(ErrorCode.TOUR_NOT_FOUND);
         }
     }
 
@@ -74,14 +76,14 @@ public class DepartureTimeServiceImpl implements DepartureTimeService {
 
     @Override
     public void updateBookedSeats(Long departureTimeId, Long bookedSeats) {
-        DepartureTime departureTime = departureTimeRepository.findById(departureTimeId).orElseThrow(() -> new RuntimeException("Departure time not found"));
+        DepartureTime departureTime = departureTimeRepository.findById(departureTimeId).orElseThrow(() -> new AppException(ErrorCode.DEPARTURE_TIME_NOT_FOUND));
         departureTime.setBookedSeats(bookedSeats);
         departureTimeRepository.save(departureTime);
     }
 
     @Override
     public void updateAvailable(Long departureTimeId) {
-        DepartureTime departureTime = departureTimeRepository.findById(departureTimeId).orElseThrow(() -> new RuntimeException("Departure time not found"));
+        DepartureTime departureTime = departureTimeRepository.findById(departureTimeId).orElseThrow(() -> new AppException(ErrorCode.DEPARTURE_TIME_NOT_FOUND));
         departureTime.setAvailable(departureTime.getBookedSeats() < departureTime.getNumberOfSeats());
         departureTimeRepository.save(departureTime);
     }

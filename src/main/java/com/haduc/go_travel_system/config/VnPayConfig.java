@@ -19,8 +19,6 @@ import java.util.*;
 public class VnPayConfig {
     @Value("${payment.vnPay.url}")
     private String vnp_PayUrl;
-    @Value("${payment.vnPay.returnUrl}")
-    private String vnp_ReturnUrl;
     @Value("${payment.vnPay.tmnCode}")
     private String vnp_TmnCode ;
 
@@ -42,7 +40,6 @@ public class VnPayConfig {
         vnpParamsMap.put("vnp_TxnRef", VnPayUtil.getRandomNumber(8));
         vnpParamsMap.put("vnp_OrderType", this.orderType);
         vnpParamsMap.put("vnp_Locale", "vn");
-        vnpParamsMap.put("vnp_ReturnUrl", this.vnp_ReturnUrl);
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
         LocalDateTime createdDate = VnPayTimeHelper.getCurrentTimeInVnPayFormat();
         LocalDateTime expireDate = VnPayTimeHelper.getExpireTimeInVnPayFormat(createdDate,15);

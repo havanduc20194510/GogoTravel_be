@@ -8,6 +8,8 @@ import com.haduc.go_travel_system.entity.DepartureTime;
 import com.haduc.go_travel_system.entity.Tour;
 import com.haduc.go_travel_system.entity.User;
 import com.haduc.go_travel_system.enums.BookingStatus;
+import com.haduc.go_travel_system.enums.ErrorCode;
+import com.haduc.go_travel_system.exception.AppException;
 import com.haduc.go_travel_system.mapper.BookingTourMapper;
 import com.haduc.go_travel_system.repository.BookingTourRepository;
 import com.haduc.go_travel_system.repository.DepartureTimeRepository;
@@ -15,9 +17,11 @@ import com.haduc.go_travel_system.repository.TourRepository;
 import com.haduc.go_travel_system.repository.UserRepository;
 import com.haduc.go_travel_system.service.BookingTourService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 @Service
 @RequiredArgsConstructor
@@ -32,30 +36,44 @@ public class BookingTourServiceImpl implements BookingTourService {
 
     @Override
     public BookingResponse createBookingTour(BookingRequest bookingRequest) {
+        var context = SecurityContextHolder.getContext();
+        String username = context.getAuthentication().getName();
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
         Tour tour = tourRepository.findById(bookingRequest.getTourId())
-                .orElseThrow(() -> new RuntimeException("Tour not found"));
-        User user = userRepository.findById(bookingRequest.getUserId())
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new AppException(ErrorCode.TOUR_NOT_FOUND));
         List<DepartureTime> departureTimes = tour.getDepartureTimes();
         boolean isContain = departureTimes.stream().anyMatch(departureTime -> departureTime.getStartDate().equals(bookingRequest.getStartDate()));
         if (!isContain) {
-            throw new RuntimeException("Tour not contain this start date");
+            throw new AppException(ErrorCode.DEPARTURE_TIME_NOT_FOUND_IN_TOUR);
         }
         int totalPeople = bookingRequest.getNumberOfAdults()+bookingRequest.getNumberOfChildren()+bookingRequest.getNumberOfBabies();
         DepartureTime departureTime = departureTimeRepository.findByTourTourIdAndStartDate(bookingRequest.getTourId(), bookingRequest.getStartDate());
-        if(totalPeople > (departureTime.getNumberOfSeats() - departureTime.getBookedSeats())){
-            throw new RuntimeException("Over people!");
+        int availableSeats = (int) (departureTime.getNumberOfSeats() - departureTime.getBookedSeats());
+        if(totalPeople > availableSeats){
+            throw new AppException(ErrorCode.OVER_NUMBER_OF_PEOPLE);
         }
+        if(totalPeople <=0 || bookingRequest.getNumberOfAdults() < 0 || bookingRequest.getNumberOfChildren() < 0 || bookingRequest.getNumberOfBabies() < 0){
+            throw new AppException(ErrorCode.INVALID_NUMBER_OF_PEOPLE);
+        }
+
+        if(!departureTime.isAvailable()) {
+            throw new AppException(ErrorCode.DEPARTURE_TIME_NOT_AVAILABLE);
+        }
+
         BookingTour bookingTour = bookingTourMapper.toBookingTour(bookingRequest);
         bookingTour.setTour(tour);
         bookingTour.setUser(user);
-        LocalDateTime bookingDate = LocalDateTime.now();
+        LocalDateTime bookingDate = LocalDateTime.now()
+                .atZone(ZoneId.systemDefault())
+                .withZoneSameInstant(ZoneId.of("Asia/Ho_Chi_Minh"))
+                .toLocalDateTime();
         bookingTour.setBookingDate(bookingDate);
         bookingTour.setStatus(BookingStatus.PENDING);
         Double totalPrice = tour.getAdultPrice() * bookingRequest.getNumberOfAdults() + tour.getChildPrice() * bookingRequest.getNumberOfChildren() + tour.getBabyPrice() * bookingRequest.getNumberOfBabies();
         bookingTour.setTotal(totalPrice);
         BookingTour bookingSaved = bookingTourRepository.save(bookingTour);
-        emailSenderService.sendSimpleEmail(bookingRequest.getEmail(), "Booking tour success!!!", "Bạn dã dặt tour thành công, mã đặt tour của bạn là: " + bookingSaved.getId() + ".Hãy thanh toán trước 24h trước khi đi tour. Cảm ơn bạn đã sử dụng dịch vụ của chúng tôi.");
+        emailSenderService.sendSimpleEmail(bookingRequest.getEmail(), "Booking tour success!!!", "Bạn đã dặt tour thành công, mã đặt tour của bạn là: " + bookingSaved.getId() + ".Hãy thanh toán trước 24h trước khi đi tour. Cảm ơn bạn đã sử dụng dịch vụ của chúng tôi." + "Tour có thể bị hủy nếu vượt quá số lượng người hoặc không thanh toán trước 24h trước khi đi tour.");
         return bookingTourMapper.toDto(bookingSaved);
     }
 
@@ -63,18 +81,19 @@ public class BookingTourServiceImpl implements BookingTourService {
     @Override
     public BookingResponse updateBookingTour(UpdateBookingRequest updateBookingRequest, String id) {
         BookingTour bookingTour = bookingTourRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Booking tour not found"));
+                .orElseThrow(() -> new AppException(ErrorCode.BOOKING_NOT_FOUND));
         bookingTour.setEmail(updateBookingRequest.getEmail());
         bookingTour.setPhone(updateBookingRequest.getPhone());
         List<DepartureTime> departureTimes = bookingTour.getTour().getDepartureTimes();
         boolean isContain = departureTimes.stream().anyMatch(departureTime -> departureTime.getStartDate().equals(updateBookingRequest.getStartDate()));
         if (!isContain) {
-            throw new RuntimeException("Tour not contain this start date");
+            throw new AppException(ErrorCode.DEPARTURE_TIME_NOT_FOUND_IN_TOUR);
         }
         int totalPeople = updateBookingRequest.getNumberOfAdults()+updateBookingRequest.getNumberOfChildren()+updateBookingRequest.getNumberOfBabies();
         DepartureTime departureTime = departureTimeRepository.findByTourTourIdAndStartDate(bookingTour.getTour().getTourId(), updateBookingRequest.getStartDate());
-        if(totalPeople > (departureTime.getNumberOfSeats() - departureTime.getBookedSeats())){
-            throw new RuntimeException("Over people!");
+        int availableSeats = (int) (departureTime.getNumberOfSeats() - departureTime.getBookedSeats());
+        if(totalPeople > availableSeats){
+            throw new AppException(ErrorCode.OVER_NUMBER_OF_PEOPLE);
         }
         bookingTour.setStartDate(updateBookingRequest.getStartDate());
         bookingTour.setNumberOfAdults(updateBookingRequest.getNumberOfAdults());
@@ -100,13 +119,13 @@ public class BookingTourServiceImpl implements BookingTourService {
     @Override
     public BookingResponse getBookingTourById(String id) {
         BookingTour bookingTour = bookingTourRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Booking tour not found"));
+                .orElseThrow(() -> new AppException(ErrorCode.BOOKING_NOT_FOUND));
         return bookingTourMapper.toDto(bookingTour);
     }
 
     @Override
     public List<BookingResponse> getBookingTourByUserId(String userId) {
-        List<BookingTour> bookingTours = bookingTourRepository.findByUserId(userId);
+        List<BookingTour> bookingTours = bookingTourRepository.findByUserIdOrderByBookingDate(userId);
         return bookingTours.stream().map(bookingTourMapper::toDto).toList();
     }
 }

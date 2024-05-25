@@ -30,6 +30,7 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.POST, "/auth/introspect").permitAll()
                 .requestMatchers(HttpMethod.POST, "/auth/refresh").permitAll()
                 .requestMatchers(HttpMethod.POST, "/auth/register").permitAll()
+                .requestMatchers(HttpMethod.POST, "/auth/token").permitAll()
                 .requestMatchers(HttpMethod.POST, "/suggestion/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/places/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/tour/**").permitAll()
@@ -39,6 +40,12 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.GET, "/schedule-detail/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/departure-time/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/tour-type/**").permitAll()
+                .requestMatchers(HttpMethod.GET,"/suggestion/**").permitAll()
+                .requestMatchers(HttpMethod.PUT, "departure-time/update/available/**").permitAll()
+                .requestMatchers(HttpMethod.GET, "/tour-reviews/**").permitAll()
+                .requestMatchers(HttpMethod.GET, "/tour-reviews/average-rating/**").permitAll()
+                .requestMatchers(HttpMethod.POST, "/tour-reviews/create").permitAll()
+                .requestMatchers(HttpMethod.PUT, "/tour-reviews/update/**").permitAll()
 
                 .requestMatchers("/swagger-ui/**",
                         "/swagger-resources/**",
@@ -48,7 +55,6 @@ public class SecurityConfig {
                 jwtConfigurer -> jwtConfigurer.decoder(customJwtDecoder)
                 .jwtAuthenticationConverter(jwtAuthenticationConverter())));
         httpSecurity.csrf(AbstractHttpConfigurer::disable);
-        httpSecurity.cors(AbstractHttpConfigurer::disable);
         return httpSecurity.build();
     }
 

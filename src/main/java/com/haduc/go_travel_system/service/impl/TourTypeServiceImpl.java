@@ -1,6 +1,8 @@
 package com.haduc.go_travel_system.service.impl;
 
 import com.haduc.go_travel_system.entity.TourType;
+import com.haduc.go_travel_system.enums.ErrorCode;
+import com.haduc.go_travel_system.exception.AppException;
 import com.haduc.go_travel_system.repository.TourTypeRepository;
 import com.haduc.go_travel_system.service.TourTypeService;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +22,7 @@ public class TourTypeServiceImpl implements TourTypeService {
 
     @Override
     public TourType getTourTypeById(Long id) {
-        return tourTypeRepository.findById(id).orElseThrow(() -> new RuntimeException("Tour type not found"));
+        return tourTypeRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.TOUR_TYPE_NOT_FOUND));
     }
 
     @Override
@@ -34,9 +36,9 @@ public class TourTypeServiceImpl implements TourTypeService {
     }
 
     @Override
-    public TourType updateTourType(Long id, TourType tourType) {
-        TourType type = tourTypeRepository.findById(id).orElseThrow(() -> new RuntimeException("Tour type not found"));
-        type.setName(tourType.getName());
+    public TourType updateTourType(Long id, String name) {
+        TourType type = tourTypeRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.TOUR_TYPE_NOT_FOUND));
+        type.setName(name);
         return tourTypeRepository.save(type);
     }
 

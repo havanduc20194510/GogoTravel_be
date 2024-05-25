@@ -14,7 +14,6 @@ import java.time.LocalDate;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class BookingRequest {
     private String tourId;
-    private String userId;
     @Email(message = "EMAIL_INVALID")
     private String email;
     private String phone;

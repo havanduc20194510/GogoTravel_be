@@ -23,4 +23,5 @@ public class PlaceResponse {
     private String timeClose;
     private String note;
     private String activities;
+    private Long totalView;
 }

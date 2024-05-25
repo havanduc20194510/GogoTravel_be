@@ -7,7 +7,6 @@ import org.mapstruct.*;
 
 @Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = MappingConstants.ComponentModel.SPRING)
 public interface PlaceMapper {
-    Place toEntity(PlaceResponse placeResponse);
 
     PlaceResponse toDto(Place place);
 

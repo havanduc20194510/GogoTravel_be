@@ -7,8 +7,11 @@ import com.haduc.go_travel_system.dto.response.TourResponse;
 import com.haduc.go_travel_system.entity.Tour;
 import com.haduc.go_travel_system.entity.TourImage;
 import com.haduc.go_travel_system.entity.TourType;
+import com.haduc.go_travel_system.enums.ErrorCode;
+import com.haduc.go_travel_system.exception.AppException;
 import com.haduc.go_travel_system.mapper.CreateTourMapper;
 import com.haduc.go_travel_system.mapper.TourMapper;
+import com.haduc.go_travel_system.repository.BookingTourRepository;
 import com.haduc.go_travel_system.repository.TourImageRepository;
 import com.haduc.go_travel_system.repository.TourRepository;
 import com.haduc.go_travel_system.repository.TourTypeRepository;
@@ -40,6 +43,8 @@ public class TourServiceImpl implements TourService {
     private final TourTypeRepository tourTypeRepository;
     private final TourImageRepository tourImageRepository;
     private final TourMapper tourMapper;
+    private final BookingTourRepository bookingTourRepository;
+
     @Override
     public CreateTourResponse createTour(CreateTourRequest request) {
         Tour tour = createTourMapper.toTour(request);
@@ -62,7 +67,7 @@ public class TourServiceImpl implements TourService {
     public TourResponse increaseView(String tourId) {
         Optional<Tour> tour = tourRepository.findById(tourId);
         if(tour.isEmpty()) {
-            throw new RuntimeException("Tour not found");
+            throw new AppException(ErrorCode.TOUR_NOT_FOUND);
         }
         tour.get().setTotalView(tour.get().getTotalView() + 1);
         Tour updatedTour = tourRepository.save(tour.get());
@@ -73,8 +78,14 @@ public class TourServiceImpl implements TourService {
     public String deleteTour(String tourId) {
         Optional<Tour> tour = tourRepository.findById(tourId);
         if(tour.isEmpty())  {
-            throw new RuntimeException("Tour not found");
+            throw new AppException(ErrorCode.TOUR_NOT_FOUND);
         }
+        // check tourId in booking
+        bookingTourRepository.findByTourTourId(tourId);
+        if (!bookingTourRepository.findByTourTourId(tourId).isEmpty()) {
+            throw new AppException(ErrorCode.TOUR_IN_BOOKING_CANNOT_DELETE);
+        }
+
         tourRepository.delete(tour.get());
         return "Delete tour successfully!";
     }
@@ -82,18 +93,12 @@ public class TourServiceImpl implements TourService {
     @Override
     public Page<TourResponse> findToursWithPagination(int offset, int pageSize) {
         Page<Tour> tours = tourRepository.findAll(PageRequest.of(offset - 1, pageSize));
-        if(tours.isEmpty()) {
-            throw new RuntimeException("Tours is empty!");
-        }
         return tours.map(tourMapper::toDto);
     }
 
     @Override
     public Page<TourResponse> findToursWithPaginationAndSort(int offset, int pageSize, String sortField) {
         Page<Tour> tours = tourRepository.findAll(PageRequest.of(offset, pageSize).withSort(Sort.by(sortField)));
-        if(tours.isEmpty()) {
-            throw new RuntimeException("Tours is empty!");
-        }
         return tours.map(tourMapper::toDto);
     }
 
@@ -101,7 +106,7 @@ public class TourServiceImpl implements TourService {
     public TourResponse uploadImage(MultipartFile[] images, String tourId) {
         Optional<Tour> tour = tourRepository.findById(tourId);
         if(tour.isEmpty()) {
-            throw new RuntimeException("Tour not found");
+            throw new AppException(ErrorCode.TOUR_NOT_FOUND);
         }
         TourResponse tourResponse = tourMapper.toDto(tour.get());
         Arrays.stream(images).forEach(image -> {
@@ -112,7 +117,7 @@ public class TourServiceImpl implements TourService {
                 tourImage.setUrl(imageUrl);
                 tourImageRepository.save(tourImage);
             } catch (IOException e) {
-                throw new RuntimeException("Error uploading image");
+                throw new AppException(ErrorCode.UPLOAD_FILE_FAILED);
             }
         });
         List<TourImage> tourImages = tourImageRepository.findByTourTourId(tourId);
@@ -123,7 +128,7 @@ public class TourServiceImpl implements TourService {
 
     @Override
     public TourResponse updateTour(CreateTourRequest request, String tourId) {
-        Tour tour = tourRepository.findById(tourId).orElseThrow(() -> new RuntimeException("Tour not found"));
+        Tour tour = tourRepository.findById(tourId).orElseThrow(() -> new AppException(ErrorCode.TOUR_NOT_FOUND));
         tour.setName(request.getName());
         tour.setAdultPrice(request.getAdultPrice());
         tour.setChildPrice(request.getChildPrice());
@@ -154,7 +159,7 @@ public class TourServiceImpl implements TourService {
     public TourResponse getTour(String tourId) {
         Optional<Tour> tour = tourRepository.findById(tourId);
         if(tour.isEmpty()) {
-            throw new RuntimeException("Tour not found");
+            throw new AppException(ErrorCode.TOUR_NOT_FOUND);
         }
         return tourMapper.toDto(tour.get());
     }
@@ -168,9 +173,6 @@ public class TourServiceImpl implements TourService {
     @Override
     public List<TourResponse> topTourRecommend() {
         List<Tour> tours = tourRepository.findTop5ByOrderByTotalViewDesc();
-        if(tours.isEmpty()) {
-            throw new RuntimeException("Tours is empty!");
-        }
         return tours.stream().map(tourMapper::toDto).collect(Collectors.toList());
     }
 

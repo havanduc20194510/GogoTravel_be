@@ -4,6 +4,8 @@ import com.haduc.go_travel_system.dto.request.CreatePlaceRequest;
 import com.haduc.go_travel_system.dto.response.PlaceResponse;
 import com.haduc.go_travel_system.entity.Place;
 import com.haduc.go_travel_system.entity.PlaceImage;
+import com.haduc.go_travel_system.enums.ErrorCode;
+import com.haduc.go_travel_system.exception.AppException;
 import com.haduc.go_travel_system.mapper.PlaceMapper;
 import com.haduc.go_travel_system.repository.PlaceImageRepository;
 import com.haduc.go_travel_system.repository.PlaceRepository;
@@ -34,13 +36,14 @@ public class PlaceServiceImpl implements PlaceService {
     @Override
     public PlaceResponse createPlace(CreatePlaceRequest request) {
         Place place = placeMapper.toPlace(request);
+        place.setTotalView(0L);
         Place placeSaved = placeRepository.save(place);
         return placeMapper.toDto(placeSaved);
     }
 
     @Override
     public PlaceResponse updatePlace(Long placeId, CreatePlaceRequest request) {
-        Place place = placeRepository.findById(placeId).orElseThrow(() -> new RuntimeException("Place not found"));
+        Place place = placeRepository.findById(placeId).orElseThrow(() -> new AppException(ErrorCode.PLACE_NOT_FOUND));
         place.setName(request.getName());
         place.setDescription(request.getDescription());
         place.setAddress(request.getAddress());
@@ -55,7 +58,7 @@ public class PlaceServiceImpl implements PlaceService {
 
     @Override
     public PlaceResponse uploadImage(Long placeId, MultipartFile[] files) throws IOException {
-        Place place = placeRepository.findById(placeId).orElseThrow(() -> new RuntimeException("Place not found"));
+        Place place = placeRepository.findById(placeId).orElseThrow(() -> new AppException(ErrorCode.PLACE_NOT_FOUND));
         for (MultipartFile file : files) {
             Map uploadResult = cloudinaryService.uploadImage(file);
             PlaceImage placeImage = new PlaceImage();
@@ -70,14 +73,14 @@ public class PlaceServiceImpl implements PlaceService {
 
     @Override
     public String deletePlace(Long placeId) {
-        Place place = placeRepository.findById(placeId).orElseThrow(() -> new RuntimeException("Place not found"));
+        Place place = placeRepository.findById(placeId).orElseThrow(() -> new AppException(ErrorCode.PLACE_NOT_FOUND));
         placeRepository.delete(place);
         return "Place deleted successfully";
     }
 
     @Override
     public PlaceResponse getPlace(Long placeId) {
-        Place place = placeRepository.findById(placeId).orElseThrow(() -> new RuntimeException("Place not found"));
+        Place place = placeRepository.findById(placeId).orElseThrow(() -> new AppException(ErrorCode.PLACE_NOT_FOUND));
         return placeMapper.toDto(place);
     }
 
@@ -102,4 +105,17 @@ public class PlaceServiceImpl implements PlaceService {
         return places.map(placeMapper::toDto);
     }
 
+    @Override
+    public PlaceResponse increaseView(Long placeId) {
+        Place place = placeRepository.findById(placeId).orElseThrow(() -> new AppException(ErrorCode.PLACE_NOT_FOUND));
+        place.setTotalView(place.getTotalView() + 1);
+        Place placeSaved = placeRepository.save(place);
+        return placeMapper.toDto(placeSaved);
+    }
+
+    @Override
+    public List<PlaceResponse> topPlaceRecommend() {
+        List<Place> places = placeRepository.findTop5ByOrderByTotalViewDesc();
+        return places.stream().map(placeMapper::toDto).toList();
+    }
 }

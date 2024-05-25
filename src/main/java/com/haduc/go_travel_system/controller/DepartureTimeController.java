@@ -3,7 +3,10 @@ package com.haduc.go_travel_system.controller;
 import com.haduc.go_travel_system.dto.request.CreateDepartureTimeRequest;
 import com.haduc.go_travel_system.dto.response.ApiResponse;
 import com.haduc.go_travel_system.dto.response.DepartureTimeResponse;
+import com.haduc.go_travel_system.entity.DepartureTime;
+import com.haduc.go_travel_system.repository.DepartureTimeRepository;
 import com.haduc.go_travel_system.service.DepartureTimeService;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -16,6 +19,7 @@ import java.util.List;
 @CrossOrigin(origins = "*")
 public class DepartureTimeController {
     private final DepartureTimeService departureTimeService;
+    private final DepartureTimeRepository departureTimeRepository;
 
     @PostMapping("/create")
     @SecurityRequirement(name = "Bearer Authentication")
@@ -65,5 +69,13 @@ public class DepartureTimeController {
                 .build();
     }
 
+    @Operation(summary = "Update available test. Dont use this in production.")
+    @PutMapping("/update/available/{departureTimeId}")
+    public String updateAvailable(@PathVariable Long departureTimeId, @RequestParam boolean available) {
+        DepartureTime departureTime = departureTimeRepository.findById(departureTimeId).orElseThrow(() -> new RuntimeException("Departure time not found"));
+        departureTime.setAvailable(available);
+        departureTimeRepository.save(departureTime);
+        return "Update available successfully";
+    }
 
 }

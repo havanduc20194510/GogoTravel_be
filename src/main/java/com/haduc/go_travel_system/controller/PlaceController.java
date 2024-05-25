@@ -102,4 +102,24 @@ public class PlaceController {
                 .data(placeResponses)
                 .build();
     }
+
+    @GetMapping("/increase-view/{id}")
+    public ApiResponse<PlaceResponse> increaseView(@PathVariable Long id) {
+        PlaceResponse placeResponse = placeService.increaseView(id);
+        return ApiResponse.<PlaceResponse>builder()
+                .code(200)
+                .message("Increase view successfully")
+                .data(placeResponse)
+                .build();
+    }
+
+    @GetMapping("/top-recommend")
+    public ApiResponse<List<PlaceResponse>> topPlaceRecommend() {
+        List<PlaceResponse> placeResponses = placeService.topPlaceRecommend();
+        return ApiResponse.<List<PlaceResponse>>builder()
+                .code(200)
+                .message("Get top place recommend successfully")
+                .data(placeResponses)
+                .build();
+    }
 }

@@ -26,5 +26,6 @@ public class BookingResponse {
     private String note;
     private LocalDateTime bookingDate;
     private Double total;
-    private BookingStatus bookingStatus;
+    private BookingStatus status;
+
 }

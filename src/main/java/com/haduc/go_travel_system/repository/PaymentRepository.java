@@ -11,4 +11,6 @@ public interface PaymentRepository extends JpaRepository<Payment,Long> {
     List<Payment> findByEmail(String email);
 
     List<Payment> findByPhone(String phone);
+
+    boolean existsByBookingId(String bookingId);
 }

@@ -24,4 +24,5 @@ public class User {
     private String address;
     @Enumerated(EnumType.STRING)
     private Set<Role> roles;
+    private Long coin;
 }

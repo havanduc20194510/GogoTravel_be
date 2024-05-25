@@ -9,6 +9,6 @@ public interface TourTypeService {
     TourType getTourTypeById(Long id);
     TourType getTourTypeByName(String name);
     TourType createTourType(TourType tourType);
-    TourType updateTourType(Long id, TourType tourType);
+    TourType updateTourType(Long id, String name);
     void deleteTourType(Long id);
 }
