@@ -1,21 +1,20 @@
 package com.haduc.go_travel_system.service.impl;
 
 import com.haduc.go_travel_system.config.VnPayConfig;
+import com.haduc.go_travel_system.dto.request.UserTaskRequest;
 import com.haduc.go_travel_system.dto.response.PaymentResponse;
 import com.haduc.go_travel_system.dto.response.VnPayResponse;
-import com.haduc.go_travel_system.dto.response.VnPayResponseCode;
-import com.haduc.go_travel_system.entity.BookingTour;
-import com.haduc.go_travel_system.entity.DepartureTime;
-import com.haduc.go_travel_system.entity.Payment;
+import com.haduc.go_travel_system.entity.*;
 import com.haduc.go_travel_system.enums.BookingStatus;
+import com.haduc.go_travel_system.enums.ErrorCode;
 import com.haduc.go_travel_system.enums.PaymentStatus;
+import com.haduc.go_travel_system.enums.TaskStatus;
+import com.haduc.go_travel_system.exception.AppException;
 import com.haduc.go_travel_system.mapper.PaymentMapper;
-import com.haduc.go_travel_system.repository.BookingTourRepository;
-import com.haduc.go_travel_system.repository.DepartureTimeRepository;
-import com.haduc.go_travel_system.repository.PaymentRepository;
-import com.haduc.go_travel_system.service.BookingTourService;
+import com.haduc.go_travel_system.repository.*;
 import com.haduc.go_travel_system.service.DepartureTimeService;
 import com.haduc.go_travel_system.service.PaymentService;
+import com.haduc.go_travel_system.service.UserTaskService;
 import com.haduc.go_travel_system.util.VnPayUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -26,28 +25,37 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.*;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class PaymentServiceImpl implements PaymentService {
+    private final UserTaskRepository userTaskRepository;
+    private final TaskRepository taskRepository;
     private final DepartureTimeRepository departureTimeRepository;
     private final BookingTourRepository bookingTourRepository;
-
     private final PaymentRepository paymentRepository;
-
-
     private final PaymentMapper paymentMapper;
-
-
     private final DepartureTimeService departureTimeService;
-
     private final VnPayConfig vnPayConfig;
+    private final UserTaskService userTaskService;
 
     @Override
-    public VnPayResponse getVnPayPayment(String bookingId, Double total, String bankCode, String language, HttpServletRequest request) {
-        bookingTourRepository.findById(bookingId).orElseThrow(() -> new RuntimeException("Booking not found!"));
+    public VnPayResponse getVnPayPayment(String bookingId, Double total, String bankCode, String language,String returnUrl, boolean coin, HttpServletRequest request) {
+        BookingTour bookingTour = bookingTourRepository.findById(bookingId).orElseThrow(() -> new AppException(ErrorCode.BOOKING_NOT_FOUND));
+        if (bookingTour.getStatus().equals(BookingStatus.CONFIRMED)) {
+            throw new AppException(ErrorCode.BOOKING_ALREADY_PAID);
+        }
+
+        if (bookingTour.getStatus().equals(BookingStatus.CANCELLED)) {
+            throw new AppException(ErrorCode.BOOKING_CANCELLED);
+        }
+
+        if(coin && bookingTour.getUser().getCoin() > 0){
+            total = total - bookingTour.getUser().getCoin()/10*1000;
+        }
         // change total to numeric
         BigDecimal totalForm = BigDecimal.valueOf(total).setScale(0, RoundingMode.HALF_UP);
         BigDecimal amount = totalForm.multiply(BigDecimal.valueOf(100));
@@ -66,7 +74,7 @@ public class PaymentServiceImpl implements PaymentService {
             vnp_Params.put("vnp_Locale", "vn");
         }
 
-        vnp_Params.put("vnp_ReturnUrl", vnPayConfig.getVnp_ReturnUrl() + "?bookingId=" + bookingId);
+        vnp_Params.put("vnp_ReturnUrl", returnUrl + "?bookingId=" + bookingId);
         vnp_Params.put("vnp_IpAddr", VnPayUtil.getIpAddress(request));
         //build query url
         String queryUrl = VnPayUtil.getPaymentURL(vnp_Params, true);
@@ -81,7 +89,7 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Override
-    public VnPayResponseCode paymentCallbackHandler(Map<String, String> queryParams, HttpServletResponse response) {
+    public String paymentCallbackHandler(Map<String, String> queryParams, HttpServletResponse response) {
         String vnp_ResponseCode = queryParams.get("vnp_ResponseCode");
         String bookingId = queryParams.get("bookingId");
         String amount = queryParams.get("vnp_Amount");
@@ -90,46 +98,84 @@ public class PaymentServiceImpl implements PaymentService {
         String payDate = queryParams.get("vnp_PayDate");
         String orderInfo = queryParams.get("vnp_OrderInfo");
         String message = getVnPayMessage(vnp_ResponseCode);
-
         if(bookingId!=null && !bookingId.equals("")){
             if(vnp_ResponseCode.equals("00")){
                 // update status booking
-                BookingTour bookingTour = bookingTourRepository.findById(bookingId).orElseThrow(()->new RuntimeException("Booking not found!!!"));
-                bookingTour.setStatus(BookingStatus.CONFIRMED);
+                BookingTour bookingTour = bookingTourRepository.findById(bookingId).orElseThrow(()->new AppException(ErrorCode.BOOKING_NOT_FOUND));
+
                 int totalSeats = bookingTour.getNumberOfAdults() + bookingTour.getNumberOfChildren() + bookingTour.getNumberOfBabies();
                 // find departure time
                 DepartureTime departureTime = departureTimeRepository.findByTourTourIdAndStartDate(bookingTour.getTour().getTourId(), bookingTour.getStartDate());
                 // update booked seats
+                int availableSeats = (int) (departureTime.getNumberOfSeats() - departureTime.getBookedSeats());
+                if(totalSeats > availableSeats){
+                    throw new AppException(ErrorCode.OVER_NUMBER_OF_PEOPLE);
+                }
+                bookingTour.setStatus(BookingStatus.CONFIRMED);
                 departureTimeService.updateBookedSeats(departureTime.getId(), departureTime.getBookedSeats() + totalSeats);
                 // update available
                 departureTimeService.updateAvailable(departureTime.getId());
-
                 bookingTourRepository.save(bookingTour);
-                Payment payment = Payment.builder()
-                        .booking(bookingTour)
-                        .username(bookingTour.getUser().getUsername())
-                        .phone(bookingTour.getPhone())
-                        .email(bookingTour.getEmail())
-                        .tourName(bookingTour.getTour().getName())
-                        .paymentMethod("vnpay")
-                        .bankCode(bankCode)
-                        .amount(amount)
-                        .payDate(payDate)
-                        .orderInfo(orderInfo)
-                        .transactionNo(transactionNo)
-                        .paymentStatus(PaymentStatus.SUCCESS)
-                        .createdAt(LocalDateTime.now())
-                        .updatedAt(LocalDateTime.now())
-                        .build();
-                paymentRepository.save(payment);
+                // save user task
+                // get schedule
+                List<TourSchedule> schedules = bookingTour.getTour().getSchedules();
+                List<Task> tasks = new ArrayList<>();
+                schedules.forEach(schedule -> tasks.addAll(taskRepository.findByTourScheduleId(schedule.getId())));
+                boolean paymentExist = paymentRepository.existsByBookingId(bookingTour.getId());
+                boolean taskExist = userTaskRepository.existsByBookingTourId(bookingTour.getId());
+                if(!tasks.isEmpty() && !taskExist){
+                    tasks.forEach(task -> {
+                        UserTaskRequest userTaskRequest = UserTaskRequest.builder()
+                                .userId(bookingTour.getUser().getId())
+                                .email(bookingTour.getEmail())
+                                .phone(bookingTour.getPhone())
+                                .tourId(bookingTour.getTour().getTourId())
+                                .bookingTourId(bookingTour.getId())
+                                .taskId(task.getId())
+                                .taskDeadline(bookingTour.getStartDate().plusDays(bookingTour.getTour().getNumberOfDays()))
+                                .taskStatus(TaskStatus.IN_PROGRESS)
+                                .build();
+                        // create user task
+                        userTaskService.createTask(userTaskRequest);
+                    });
+                }
+                // save payment
+                if(!paymentExist) {
+                    LocalDateTime createdAt = LocalDateTime.now()
+                            .atZone(ZoneId.systemDefault())
+                            .withZoneSameInstant(ZoneId.of("Asia/Ho_Chi_Minh"))
+                            .toLocalDateTime();
+                    String payMoney;
+                    try {
+                        int money = Integer.parseInt(amount);
+                        money = money/100;
+                        payMoney = String.valueOf(money);
+                    } catch (NumberFormatException e) {
+                        throw new AppException(ErrorCode.INVALID_AMOUNT);
+                    }
+                    Payment payment = Payment.builder()
+                            .booking(bookingTour)
+                            .username(bookingTour.getUser().getUsername())
+                            .phone(bookingTour.getPhone())
+                            .email(bookingTour.getEmail())
+                            .tourName(bookingTour.getTour().getName())
+                            .paymentMethod("VNPay")
+                            .bankCode(bankCode)
+                            .amount(payMoney)
+                            .payDate(payDate)
+                            .orderInfo(orderInfo)
+                            .transactionNo(transactionNo)
+                            .paymentStatus(PaymentStatus.SUCCESS)
+                            .createdAt(createdAt)
+                            .updatedAt(createdAt)
+                            .build();
+                    paymentRepository.save(payment);
+                }
             }
+            return message;
         }else {
-            throw new RuntimeException("Booking not found !!!");
+            throw new AppException(ErrorCode.BOOKING_NOT_FOUND);
         }
-        return VnPayResponseCode.builder()
-                .code(vnp_ResponseCode)
-                .message(message)
-                .build();
     }
 
     @Override

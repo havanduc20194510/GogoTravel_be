@@ -27,4 +27,5 @@ public class Place {
     private String timeClose;
     private String note;
     private String activities;
+    private Long totalView;
 }

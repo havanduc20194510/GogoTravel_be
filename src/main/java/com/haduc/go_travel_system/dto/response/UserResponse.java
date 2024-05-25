@@ -18,4 +18,5 @@ public class UserResponse {
     private String phone;
     private String address;
     private Set<String> roles;
+    private Long coin;
 }

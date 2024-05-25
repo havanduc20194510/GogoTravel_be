@@ -18,7 +18,5 @@ public class TaskResponse {
     private String description;
     private Long coin;
     private String reward;
-    private LocalDate deadline;
-    private TaskStatus status;
     private TaskType taskType;
 }

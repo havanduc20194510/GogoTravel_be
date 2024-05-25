@@ -21,11 +21,9 @@ public class DepartureTime {
     private LocalDate startDate;
     private Long numberOfSeats;
 
-    @Builder.Default
-    private Long bookedSeats = 0L;
+    private Long bookedSeats;
 
-    @Builder.Default
     // dat ten truong trong db la is_available
     @Column(name = "is_available")
-    private boolean available = true;
+    private boolean available;
 }

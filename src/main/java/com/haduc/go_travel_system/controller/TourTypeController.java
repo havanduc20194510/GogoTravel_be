@@ -25,16 +25,16 @@ public class TourTypeController {
 
     @PutMapping("/update")
     @SecurityRequirement(name = "Bearer Authentication")
-    public ApiResponse<?> updateTourType(@RequestBody TourType tourType) {
+    public ApiResponse<?> updateTourType(@RequestParam Long id, @RequestParam String name) {
         return ApiResponse.builder()
                 .code(200)
                 .message("Success")
-                .data(tourTypeService.updateTourType(tourType.getId(), tourType)).build();
+                .data(tourTypeService.updateTourType(id, name)).build();
     }
 
     @DeleteMapping("/delete")
     @SecurityRequirement(name = "Bearer Authentication")
-    public ApiResponse<?> deleteTourType(@RequestBody Long id) {
+    public ApiResponse<?> deleteTourType(@RequestParam Long id) {
         tourTypeService.deleteTourType(id);
         return ApiResponse.builder()
                 .code(200)

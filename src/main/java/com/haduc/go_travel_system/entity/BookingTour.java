@@ -1,6 +1,7 @@
 package com.haduc.go_travel_system.entity;
 
 import com.haduc.go_travel_system.enums.BookingStatus;
+import com.haduc.go_travel_system.enums.TaskStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

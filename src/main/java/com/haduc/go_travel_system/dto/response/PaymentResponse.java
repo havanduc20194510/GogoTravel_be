@@ -1,6 +1,5 @@
 package com.haduc.go_travel_system.dto.response;
 
-import com.haduc.go_travel_system.entity.BookingTour;
 import com.haduc.go_travel_system.enums.PaymentStatus;
 import jakarta.persistence.*;
 import lombok.*;
@@ -13,7 +12,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 public class PaymentResponse {
-    private Long id;
+    private String id;
 
     private String bookingId;
 

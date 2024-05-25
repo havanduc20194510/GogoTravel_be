@@ -3,6 +3,7 @@ package com.haduc.go_travel_system.service;
 import com.haduc.go_travel_system.dto.request.CreateTaskRequest;
 import com.haduc.go_travel_system.dto.request.UpdateTaskRequest;
 import com.haduc.go_travel_system.dto.response.TaskResponse;
+import com.haduc.go_travel_system.dto.response.TaskVerifyResponse;
 import com.haduc.go_travel_system.entity.Task;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -19,6 +20,7 @@ public interface TaskService{
     String deleteTask(Long id);
 
     List<TaskResponse> getAllTasks();
+
     List<TaskResponse> getTasksByTourScheduleId(Long tourScheduleId);
 
 

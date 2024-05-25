@@ -6,7 +6,8 @@ import com.haduc.go_travel_system.dto.response.TaskResponse;
 import com.haduc.go_travel_system.entity.Task;
 import com.haduc.go_travel_system.entity.TaskType;
 import com.haduc.go_travel_system.entity.TourSchedule;
-import com.haduc.go_travel_system.enums.TaskStatus;
+import com.haduc.go_travel_system.enums.ErrorCode;
+import com.haduc.go_travel_system.exception.AppException;
 import com.haduc.go_travel_system.mapper.TaskMapper;
 import com.haduc.go_travel_system.repository.TaskRepository;
 import com.haduc.go_travel_system.repository.TaskTypeRepository;
@@ -30,8 +31,7 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public TaskResponse createTask(CreateTaskRequest request) {
         Task task = taskMapper.toTask(request);
-        task.setStatus(TaskStatus.IN_PROGRESS);
-        TourSchedule tourSchedule = tourScheduleRepository.findById(request.getTourScheduleId()).orElseThrow(() -> new RuntimeException("Schedule not found"));
+        TourSchedule tourSchedule = tourScheduleRepository.findById(request.getTourScheduleId()).orElseThrow(() -> new AppException(ErrorCode.TOUR_SCHEDULE_NOT_FOUND));
         task.setTourSchedule(tourSchedule);
         TaskType taskType = taskTypeRepository.findByName(request.getTaskTypeName());
         if(taskType == null) {
@@ -48,19 +48,17 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public TaskResponse getTaskById(Long id) {
-        Task task = taskRepository.findById(id).orElseThrow(() -> new RuntimeException("Task not found"));
+        Task task = taskRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.TASK_NOT_FOUND));
         return taskMapper.toDto(task);
     }
 
     @Override
     public TaskResponse updateTask(Long id, UpdateTaskRequest request) {
-        Task task = taskRepository.findById(id).orElseThrow(() -> new RuntimeException("Task not found"));
+        Task task = taskRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.TASK_NOT_FOUND));
         task.setName(request.getName());
         task.setDescription(request.getDescription());
         task.setCoin(request.getCoin());
         task.setReward(request.getReward());
-        task.setDeadline(request.getDeadline());
-        task.setStatus(request.getStatus());
         TaskType taskType = taskTypeRepository.findByName(request.getTaskTypeName());
         if(taskType == null) {
             TaskType newType = new TaskType();
@@ -76,7 +74,7 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public String deleteTask(Long id) {
-        taskRepository.findById(id).orElseThrow(() -> new RuntimeException("Task not found"));
+        taskRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.TASK_NOT_FOUND));
         taskRepository.deleteById(id);
         return "Task deleted";
     }
@@ -94,8 +92,9 @@ public class TaskServiceImpl implements TaskService {
     public List<TaskResponse> getTasksByTourScheduleId(Long tourScheduleId) {
         List<Task> tasks = taskRepository.findByTourScheduleId(tourScheduleId);
         if (tasks.isEmpty()) {
-            throw new RuntimeException("Task not found");
+            throw new AppException(ErrorCode.TASK_NOT_FOUND);
         }
         return tasks.stream().map(taskMapper::toDto).collect(Collectors.toList());
     }
+
 }

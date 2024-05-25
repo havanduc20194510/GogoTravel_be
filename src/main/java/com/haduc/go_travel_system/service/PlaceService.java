@@ -18,4 +18,8 @@ public interface PlaceService {
     PlaceResponse getPlace(Long placeId);
     Page<PlaceResponse> searchPlace(String name, String address, String activities, int offset, int pageSize);
 
+    PlaceResponse increaseView(Long placeId);
+
+    List<PlaceResponse> topPlaceRecommend();
+
 }

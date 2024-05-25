@@ -38,7 +38,7 @@ public class TourSpecification {
             }
 
             if (filterType != null && !filterType.isEmpty()) {
-                predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("tourTypeName")), "%" + filterType.toLowerCase() + "%"));
+                predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("tourType").get("name")), "%" + filterType.toLowerCase() + "%"));
             }
 
             if (predicates.isEmpty()) {

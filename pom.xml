@@ -91,6 +91,14 @@
             <artifactId>spring-boot-starter-mail</artifactId>
             <version>3.2.5</version>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/org.springframework.ai/spring-ai-openai -->
+        <!-- https://mvnrepository.com/artifact/io.springboot.ai/spring-ai-openai -->
+        <dependency>
+            <groupId>io.springboot.ai</groupId>
+            <artifactId>spring-ai-openai</artifactId>
+            <version>1.0.3</version>
+        </dependency>
+
 
 
     </dependencies>

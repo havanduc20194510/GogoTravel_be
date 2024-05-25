@@ -51,22 +51,24 @@ public class UserServiceImpl implements UserService {
                 if(checkRoleExist) {
                     roles.add(Role.valueOf(role));
                 } else {
-                    throw new RuntimeException("Role not valid");
+                    throw new AppException(ErrorCode.INVALID_ROLE);
                 }
+                user.setRoles(roles);
             }
         }
-
-        roles.add(Role.USER);
+        else {
+            roles.add(Role.USER);
+        }
         user.setRoles(roles);
+        user.setCoin(0L);
         return userMapper.toDto(userRepository.save(user));
     }
 
     @Override
     public UserResponse updateUser(String userId, UpdateUserRequest request) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
         user.setUsername(request.getUsername());
-        user.setPassword(request.getPassword());
         user.setEmail(request.getEmail());
         user.setPhone(request.getPhone());
         user.setAddress(request.getAddress());
@@ -90,7 +92,7 @@ public class UserServiceImpl implements UserService {
     @PostAuthorize("returnObject.username == authentication.name")
     public UserResponse getUser(String id){
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
         return userMapper.toDto(user);
     }
 
