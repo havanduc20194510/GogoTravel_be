@@ -32,6 +32,7 @@ import java.util.*;
 @RequiredArgsConstructor
 @Slf4j
 public class PaymentServiceImpl implements PaymentService {
+    private final UserRepository userRepository;
     private final UserTaskRepository userTaskRepository;
     private final TaskRepository taskRepository;
     private final DepartureTimeRepository departureTimeRepository;
@@ -55,6 +56,9 @@ public class PaymentServiceImpl implements PaymentService {
 
         if(coin && bookingTour.getUser().getCoin() > 0){
             total = total - bookingTour.getUser().getCoin()/10*1000;
+            User user = bookingTour.getUser();
+            user.setCoin(0L);
+            userRepository.save(user);
         }
         // change total to numeric
         BigDecimal totalForm = BigDecimal.valueOf(total).setScale(0, RoundingMode.HALF_UP);

@@ -18,4 +18,9 @@ public interface BookingTourService {
     BookingResponse getBookingTourById(String id);
 
     List<BookingResponse> getBookingTourByUserId(String userId);
+
+    List<BookingResponse> getBookingTourByPhoneOrEmail(String phone, String email);
+
+    Double[] getMonthlyTotalForYear(int year);
+
 }

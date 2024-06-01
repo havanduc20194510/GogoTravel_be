@@ -9,5 +9,6 @@ import java.util.List;
 @Repository
 public interface TourReviewRepository extends JpaRepository<TourReview, Long> {
     List<TourReview> findByTourTourId(String tourId);
+    List<TourReview> findTop3ByOrderByRatingDesc();
 
 }

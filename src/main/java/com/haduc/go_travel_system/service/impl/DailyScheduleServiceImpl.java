@@ -45,7 +45,7 @@ public class DailyScheduleServiceImpl implements DailyScheduleService {
     @Override
     @Scheduled(cron = "0 0 0 * * *")
     public void updateUserTask() {
-        List<UserTask> userTasks = userTaskRepository.findByTaskStatus(TaskStatus.IN_PROGRESS.name());
+        List<UserTask> userTasks = userTaskRepository.findByTaskStatus(TaskStatus.IN_PROGRESS);
         LocalDate currentDate = LocalDate.now();
         userTasks.forEach(userTask -> {
             if (currentDate.isAfter(userTask.getTaskDeadline())) {

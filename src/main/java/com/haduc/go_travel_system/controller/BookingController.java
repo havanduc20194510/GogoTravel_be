@@ -87,10 +87,33 @@ public class BookingController {
                     .data(null)
                     .build();
         }
-
         return ApiResponse.<List<BookingResponse>>builder()
                 .message("Get booking tour by user id successfully")
                 .data(bookingResponses)
+                .build();
+    }
+
+    @GetMapping("/get-by-phone-or-email")
+    public ApiResponse<List<BookingResponse>> getBookingTourByPhoneOrEmail(@RequestParam(required = false) String phone, @RequestParam(required = false) String email) {
+        List<BookingResponse> bookingResponses = bookingTourService.getBookingTourByPhoneOrEmail(phone, email);
+        if(bookingResponses.isEmpty()) {
+            return ApiResponse.<List<BookingResponse>>builder()
+                    .message("No booking tour found")
+                    .data(null)
+                    .build();
+        }
+        return ApiResponse.<List<BookingResponse>>builder()
+                .message("Get booking tour by phone or email successfully")
+                .data(bookingResponses)
+                .build();
+    }
+
+    @GetMapping("/get-monthly-total")
+    public ApiResponse<Double[]> getMonthlyTotalForYear(@RequestParam int year) {
+        Double[] monthlyTotals = bookingTourService.getMonthlyTotalForYear(year);
+        return ApiResponse.<Double[]>builder()
+                .message("Get monthly total for year successfully")
+                .data(monthlyTotals)
                 .build();
     }
 

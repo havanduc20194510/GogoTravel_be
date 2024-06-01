@@ -72,7 +72,6 @@ public class UserServiceImpl implements UserService {
         user.setEmail(request.getEmail());
         user.setPhone(request.getPhone());
         user.setAddress(request.getAddress());
-
         return userMapper.toDto(userRepository.save(user));
     }
 

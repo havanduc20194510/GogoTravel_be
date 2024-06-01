@@ -46,4 +46,16 @@ public class UserTaskController {
         List<UserTaskResponse> response = userTaskService.getAllTasks();
         return ApiResponse.<List<UserTaskResponse>>builder().code(200).message("get all user task success!!").data(response).build();
     }
+
+    @GetMapping("/get-my-tasks")
+    public ApiResponse<List<UserTaskResponse>> getMyTasks() {
+        List<UserTaskResponse> response = userTaskService.getMyTasks();
+        return ApiResponse.<List<UserTaskResponse>>builder().code(200).message("get my tasks success!!").data(response).build();
+    }
+
+    @GetMapping("/get-by-phone-or-email")
+    public ApiResponse<List<UserTaskResponse>> getUserTaskByPhoneOrEmail(@RequestParam(required = false) String phone, @RequestParam(required = false) String email) {
+        List<UserTaskResponse> response = userTaskService.getTasksByEmailOrPhone(email, phone);
+        return ApiResponse.<List<UserTaskResponse>>builder().code(200).message("get user task by phone or email success!!").data(response).build();
+    }
 }
