@@ -1,35 +1,31 @@
 package com.haduc.go_travel_system.dto.request;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.haduc.go_travel_system.enums.TourStatus;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import lombok.*;
 
-import java.util.Date;
 
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 public class CreateTourRequest {
-    private String tourId;
     private String name;
-    private Double price;
     private Double adultPrice;
     private Double childPrice;
+    private Double babyPrice;
     private String unit;
     private String description;
     private Long numberOfDays;
     private Long numberOfNights;
-    private Date startDate;
-    private Date endDate;
     private String vehicle;
-    private String departure;
+    private String departureLocation;
     private Double hotelStar;
     private Long numberOfSeats;
-    private Long availableSeats;
-    private String status;
-    private String image;
+    @Enumerated(EnumType.STRING)
+    private TourStatus status;
     private String note;
-    private Long tourTypeId;
+    private String tourTypeName;
 }

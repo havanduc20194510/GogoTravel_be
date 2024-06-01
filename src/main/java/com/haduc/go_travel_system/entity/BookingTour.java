@@ -1,5 +1,7 @@
 package com.haduc.go_travel_system.entity;
 
+import com.haduc.go_travel_system.enums.BookingStatus;
+import com.haduc.go_travel_system.enums.TaskStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -7,6 +9,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+
 @Entity
 @Getter
 @Setter
@@ -22,12 +26,15 @@ public class BookingTour {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
-    private LocalDate bookingDate;
+    private String email;
+    private String phone;
+    private LocalDate startDate;
     private int numberOfAdults;
     private int numberOfChildren;
+    private int numberOfBabies;
     private String note;
+    private LocalDateTime bookingDate;
     private Double total;
-    private String status;
-    private String paymentMethod;
-    private String paymentStatus;
+    @Enumerated(EnumType.STRING)
+    private BookingStatus status;
 }

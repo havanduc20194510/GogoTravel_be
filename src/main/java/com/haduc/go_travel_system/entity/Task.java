@@ -6,7 +6,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.Date;
 
 @Entity
 @Getter
@@ -18,15 +17,13 @@ public class Task {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "ScheduleDetailId")
-    private ScheduleDetail scheduleDetail;
+    @JoinColumn(name = "tourScheduleId", referencedColumnName = "id")
+    private TourSchedule tourSchedule;
     private String name;
     private String description;
-    private Long star;
+    private Long coin;
     private String reward;
-    private Date deadline;
-    private String status;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "taskTypeId")
     private TaskType taskType;
 }

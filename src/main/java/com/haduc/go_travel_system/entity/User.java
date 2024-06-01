@@ -1,15 +1,18 @@
 package com.haduc.go_travel_system.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import lombok.Getter;
-import lombok.Setter;
+import com.haduc.go_travel_system.enums.Role;
+import jakarta.persistence.*;
+import lombok.*;
+
+import java.util.Set;
+
 
 @Entity
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -19,4 +22,7 @@ public class User {
     private String email;
     private String phone;
     private String address;
+    @Enumerated(EnumType.STRING)
+    private Set<Role> roles;
+    private Long coin;
 }

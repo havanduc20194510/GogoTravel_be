@@ -2,10 +2,7 @@ package com.haduc.go_travel_system.dto.request;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
@@ -16,6 +13,7 @@ public class CreateUserRequest {
     private String username;
     @Size(min = 6, message = "PASSWORD_INVALID")
     private String password;
-    @Email(message = "Email must be valid")
+    @Email(message = "EMAIL_INVALID")
     private String email;
+    private String[] roles; // ["ROLE_USER", "ROLE_ADMIN", "ROLE_GAME_MANAGER"]
 }

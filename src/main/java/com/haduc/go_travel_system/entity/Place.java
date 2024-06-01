@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 @Entity
 @Getter
 @Setter
@@ -18,20 +20,12 @@ public class Place {
     private String name;
     private String description;
     private String address;
-    private String image;
-    private String type;
+    @OneToMany(mappedBy = "place", cascade = CascadeType.ALL)
+    private List<PlaceImage> images;
     private String location;
-    private String price;
     private String timeOpen;
     private String timeClose;
-    private String phone;
-    private String status;
     private String note;
-    private String rating;
-    private String tag;
-    @ManyToOne
-    @JoinColumn(name = "activity_id")
-    private PlaceActivity activity;
-    private String createAt;
-    private String updateAt;
+    private String activities;
+    private Long totalView;
 }
