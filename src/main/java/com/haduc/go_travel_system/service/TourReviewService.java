@@ -12,6 +12,6 @@ public interface TourReviewService {
     TourReviewResponse updateTourReview(TourReviewRequest request, Long reviewId);
     String deleteTourReview(Long id);
     List<TourReviewResponse> getTourReviewsByTourId(String tourId);
-
     AverageRatingResponse getAverageRatingByTourId(String tourId);
+    List<TourReviewResponse> getTop3TourReviews();
 }

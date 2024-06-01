@@ -12,6 +12,7 @@ import com.haduc.go_travel_system.repository.UserRepository;
 import com.haduc.go_travel_system.repository.UserTaskRepository;
 import com.haduc.go_travel_system.service.UserTaskService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -88,5 +89,26 @@ public class UserTaskServiceImpl implements UserTaskService {
         } else {
             throw new AppException(ErrorCode.TASK_NOT_EXISTED);
         }
+    }
+
+    @Override
+    public List<UserTaskResponse> getMyTasks() {
+        var context = SecurityContextHolder.getContext();
+        String name = context.getAuthentication().getName();
+        User user = userRepository.findByUsername(name)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+        List<UserTask> userTasks = userTaskRepository.findByUserId(user.getId());
+        return userTasks.stream().map(userTaskMapper::toUserTaskResponse).toList();
+    }
+
+    @Override
+    public List<UserTaskResponse> getTasksByEmailOrPhone(String email, String phone) {
+        List<UserTask> userTasks;
+        if(email == null && phone == null) {
+            userTasks = userTaskRepository.findAll();
+        }else {
+            userTasks = userTaskRepository.findByPhoneOrEmail(phone, email);
+        }
+        return userTasks.stream().map(userTaskMapper::toUserTaskResponse).toList();
     }
 }

@@ -4,6 +4,7 @@ import com.haduc.go_travel_system.dto.request.TourReviewRequest;
 import com.haduc.go_travel_system.dto.response.AverageRatingResponse;
 import com.haduc.go_travel_system.dto.response.TourReviewResponse;
 import com.haduc.go_travel_system.entity.TourReview;
+import com.haduc.go_travel_system.enums.BookingStatus;
 import com.haduc.go_travel_system.enums.ErrorCode;
 import com.haduc.go_travel_system.exception.AppException;
 import com.haduc.go_travel_system.mapper.TourReviewMapper;
@@ -21,12 +22,11 @@ import java.util.List;
 public class TourReviewServiceImpl implements TourReviewService {
     private final TourReviewMapper tourReviewMapper;
     private final TourReviewRepository tourReviewRepository;
-
     private final BookingTourRepository bookingTourRepository;
 
     @Override
     public TourReviewResponse createTourReview(TourReviewRequest request) {
-        if (bookingTourRepository.existsByTourTourIdAndUserId(request.getTourId(), request.getUserId())) {
+        if (bookingTourRepository.existsByTourTourIdAndUserIdAndStatus(request.getTourId(), request.getUserId(), BookingStatus.CONFIRMED)) {
             throw new AppException(ErrorCode.USER_NOT_BOOKED_TOUR);
         }
         TourReview tourReview = tourReviewMapper.toTourReview(request);
@@ -35,7 +35,7 @@ public class TourReviewServiceImpl implements TourReviewService {
 
     @Override
     public TourReviewResponse updateTourReview(TourReviewRequest request, Long reviewId) {
-        if (bookingTourRepository.existsByTourTourIdAndUserId(request.getTourId(), request.getUserId())) {
+        if (bookingTourRepository.existsByTourTourIdAndUserIdAndStatus(request.getTourId(), request.getUserId(), BookingStatus.CONFIRMED)) {
             throw new AppException(ErrorCode.USER_NOT_BOOKED_TOUR);
         }
         TourReview tourReview = tourReviewRepository.findById(reviewId)
@@ -65,5 +65,11 @@ public class TourReviewServiceImpl implements TourReviewService {
                 .averageRating(averageRating)
                 .totalReview(tourReviews.size())
                 .build();
+    }
+
+    @Override
+    public List<TourReviewResponse> getTop3TourReviews() {
+        List<TourReview> tourReviews = tourReviewRepository.findTop3ByOrderByRatingDesc();
+        return tourReviews.stream().map(tourReviewMapper::toTourReviewResponse).toList();
     }
 }

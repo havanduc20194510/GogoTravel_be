@@ -23,6 +23,10 @@ public interface UserTaskService {
 
     List<UserTaskResponse> getTasksByPhone(String phone);
 
+    List<UserTaskResponse> getMyTasks();
+
     String verifyTask(String userTaskId);
+
+    List<UserTaskResponse> getTasksByEmailOrPhone(String email, String phone);
 
 }

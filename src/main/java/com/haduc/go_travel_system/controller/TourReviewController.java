@@ -46,4 +46,10 @@ public class TourReviewController {
         AverageRatingResponse averageRatingResponse = tourReviewService.getAverageRatingByTourId(tourId);
         return ApiResponse.<AverageRatingResponse>builder().data(averageRatingResponse).message("get average rating by tourId successfully!").build();
     }
+
+    @GetMapping("/top-3")
+    public ApiResponse<List<TourReviewResponse>> getTop3TourReviews() {
+        List<TourReviewResponse> tourReviewResponses = tourReviewService.getTop3TourReviews();
+        return ApiResponse.<List<TourReviewResponse>>builder().data(tourReviewResponses).message("get top 3 tour reviews successfully!").build();
+    }
 }

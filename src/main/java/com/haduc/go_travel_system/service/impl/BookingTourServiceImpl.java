@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.Arrays;
 import java.util.List;
 @Service
 @RequiredArgsConstructor
@@ -128,4 +129,30 @@ public class BookingTourServiceImpl implements BookingTourService {
         List<BookingTour> bookingTours = bookingTourRepository.findByUserIdOrderByBookingDate(userId);
         return bookingTours.stream().map(bookingTourMapper::toDto).toList();
     }
+
+    @Override
+    public List<BookingResponse> getBookingTourByPhoneOrEmail(String phone, String email) {
+        if(phone == null && email == null){
+            List<BookingTour> bookingTours = bookingTourRepository.findAll();
+            return bookingTours.stream().map(bookingTourMapper::toDto).toList();
+        }
+        List<BookingTour> bookingTours = bookingTourRepository.findByPhoneOrEmail(phone, email);
+        return bookingTours.stream().map(bookingTourMapper::toDto).toList();
+    }
+
+    @Override
+    public Double[] getMonthlyTotalForYear(int year) {
+            List<Object[]> results = bookingTourRepository.findMonthlyTotalByStatusAndYear(BookingStatus.CONFIRMED, year);
+            Double[] monthlyTotals = new Double[12];
+            Arrays.fill(monthlyTotals, 0.0);  // Initialize all months to 0.0
+
+            for (Object[] result : results) {
+                Integer month = (Integer) result[0];
+                Double total = (Double) result[1];
+                monthlyTotals[month - 1] = total;  // month is 1-based, array is 0-based
+            }
+
+            return monthlyTotals;
+    }
+
 }
