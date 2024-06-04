@@ -29,6 +29,7 @@ public class UserTaskMapper {
                 .tourId(userTask.getTour().getTourId())
                 .tourName(userTask.getTour().getName())
                 .bookingTourId(userTask.getBookingTour().getId())
+                .taskName(userTask.getTask().getName())
                 .taskDeadline(userTask.getTaskDeadline())
                 .taskStatus(userTask.getTaskStatus())
                 .build();

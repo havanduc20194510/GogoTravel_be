@@ -115,11 +115,6 @@ public class PaymentServiceImpl implements PaymentService {
                 if(totalSeats > availableSeats){
                     throw new AppException(ErrorCode.OVER_NUMBER_OF_PEOPLE);
                 }
-                bookingTour.setStatus(BookingStatus.CONFIRMED);
-                departureTimeService.updateBookedSeats(departureTime.getId(), departureTime.getBookedSeats() + totalSeats);
-                // update available
-                departureTimeService.updateAvailable(departureTime.getId());
-                bookingTourRepository.save(bookingTour);
                 // save user task
                 // get schedule
                 List<TourSchedule> schedules = bookingTour.getTour().getSchedules();
@@ -145,6 +140,11 @@ public class PaymentServiceImpl implements PaymentService {
                 }
                 // save payment
                 if(!paymentExist) {
+                    bookingTour.setStatus(BookingStatus.CONFIRMED);
+                    departureTimeService.updateBookedSeats(departureTime.getId(), departureTime.getBookedSeats() + totalSeats);
+                    // update available
+                    departureTimeService.updateAvailable(departureTime.getId());
+                    bookingTourRepository.save(bookingTour);
                     LocalDateTime createdAt = LocalDateTime.now()
                             .atZone(ZoneId.systemDefault())
                             .withZoneSameInstant(ZoneId.of("Asia/Ho_Chi_Minh"))

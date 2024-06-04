@@ -13,6 +13,6 @@ import java.util.List;
 @Repository
 public interface TourRepository extends JpaRepository<Tour, String>, PagingAndSortingRepository<Tour, String> {
     Page<Tour> findAll(Specification<Tour> spec, Pageable pageable);
-    List<Tour> findTop5ByOrderByTotalViewDesc();
+    List<Tour> findTop6ByOrderByTotalViewDesc();
 
 }

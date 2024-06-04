@@ -172,7 +172,7 @@ public class TourServiceImpl implements TourService {
 
     @Override
     public List<TourResponse> topTourRecommend() {
-        List<Tour> tours = tourRepository.findTop5ByOrderByTotalViewDesc();
+        List<Tour> tours = tourRepository.findTop6ByOrderByTotalViewDesc();
         return tours.stream().map(tourMapper::toDto).collect(Collectors.toList());
     }
 

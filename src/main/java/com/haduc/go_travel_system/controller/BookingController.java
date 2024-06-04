@@ -117,4 +117,13 @@ public class BookingController {
                 .build();
     }
 
+    @GetMapping("/get-total")
+    public ApiResponse<Double> getTotalBookingTour(@RequestParam String tourId, @RequestParam int numberOfAdults, @RequestParam int numberOfChildren, @RequestParam int numberOfBabies) {
+        Double total = bookingTourService.getTotalBookingTour(tourId, numberOfAdults, numberOfChildren, numberOfBabies);
+        return ApiResponse.<Double>builder()
+                .message("Get total booking tour successfully")
+                .data(total)
+                .build();
+    }
+
 }

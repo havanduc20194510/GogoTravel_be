@@ -23,4 +23,6 @@ public interface BookingTourService {
 
     Double[] getMonthlyTotalForYear(int year);
 
+    Double getTotalBookingTour(String tourId,int numberOfAdults, int numberOfChildren, int numberOfBabies);
+
 }

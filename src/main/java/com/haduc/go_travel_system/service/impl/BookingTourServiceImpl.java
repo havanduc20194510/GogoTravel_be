@@ -155,4 +155,10 @@ public class BookingTourServiceImpl implements BookingTourService {
             return monthlyTotals;
     }
 
+    @Override
+    public Double getTotalBookingTour(String tourId, int numberOfAdults, int numberOfChildren, int numberOfBabies) {
+        Tour tour = tourRepository.findById(tourId)
+                .orElseThrow(() -> new AppException(ErrorCode.TOUR_NOT_FOUND));
+        return tour.getAdultPrice() * numberOfAdults + tour.getChildPrice() * numberOfChildren + tour.getBabyPrice() * numberOfBabies;
+    }
 }

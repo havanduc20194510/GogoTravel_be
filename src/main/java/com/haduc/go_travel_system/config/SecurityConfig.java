@@ -46,6 +46,7 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.GET, "/tour-reviews/average-rating/**").permitAll()
                 .requestMatchers(HttpMethod.POST, "/tour-reviews/create").permitAll()
                 .requestMatchers(HttpMethod.PUT, "/tour-reviews/update/**").permitAll()
+                .requestMatchers(HttpMethod.GET,"/payment/vn-pay/check-payment/**").permitAll()
 
                 .requestMatchers("/swagger-ui/**",
                         "/swagger-resources/**",
