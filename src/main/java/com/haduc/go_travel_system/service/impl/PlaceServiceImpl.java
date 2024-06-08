@@ -115,7 +115,7 @@ public class PlaceServiceImpl implements PlaceService {
 
     @Override
     public List<PlaceResponse> topPlaceRecommend() {
-        List<Place> places = placeRepository.findTop5ByOrderByTotalViewDesc();
+        List<Place> places = placeRepository.findTop6ByOrderByTotalViewDesc();
         return places.stream().map(placeMapper::toDto).toList();
     }
 }

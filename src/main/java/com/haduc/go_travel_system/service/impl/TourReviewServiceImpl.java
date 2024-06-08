@@ -26,7 +26,7 @@ public class TourReviewServiceImpl implements TourReviewService {
 
     @Override
     public TourReviewResponse createTourReview(TourReviewRequest request) {
-        if (bookingTourRepository.existsByTourTourIdAndUserIdAndStatus(request.getTourId(), request.getUserId(), BookingStatus.CONFIRMED)) {
+        if (!bookingTourRepository.existsByTourTourIdAndUserIdAndStatus(request.getTourId(), request.getUserId(), BookingStatus.CONFIRMED)) {
             throw new AppException(ErrorCode.USER_NOT_BOOKED_TOUR);
         }
         TourReview tourReview = tourReviewMapper.toTourReview(request);
@@ -35,7 +35,7 @@ public class TourReviewServiceImpl implements TourReviewService {
 
     @Override
     public TourReviewResponse updateTourReview(TourReviewRequest request, Long reviewId) {
-        if (bookingTourRepository.existsByTourTourIdAndUserIdAndStatus(request.getTourId(), request.getUserId(), BookingStatus.CONFIRMED)) {
+        if (!bookingTourRepository.existsByTourTourIdAndUserIdAndStatus(request.getTourId(), request.getUserId(), BookingStatus.CONFIRMED)) {
             throw new AppException(ErrorCode.USER_NOT_BOOKED_TOUR);
         }
         TourReview tourReview = tourReviewRepository.findById(reviewId)

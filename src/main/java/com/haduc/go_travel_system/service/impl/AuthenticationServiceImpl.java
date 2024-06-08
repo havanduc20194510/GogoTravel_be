@@ -170,6 +170,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         HashSet<Role> roles = new HashSet<>();
         roles.add(Role.USER);
         user.setRoles(roles);
+        user.setCoin(0L);
         return userMapper.toDto(userRepository.save(user));
     }
 }

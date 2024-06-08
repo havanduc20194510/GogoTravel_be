@@ -49,7 +49,6 @@ public class TourServiceImpl implements TourService {
     public CreateTourResponse createTour(CreateTourRequest request) {
         Tour tour = createTourMapper.toTour(request);
         tour.setTotalView(0L);
-        tour.setRating(0D);
         TourType type = tourTypeRepository.findByName(request.getTourTypeName());
         if(type == null) {
             TourType newType = new TourType();
@@ -172,7 +171,7 @@ public class TourServiceImpl implements TourService {
 
     @Override
     public List<TourResponse> topTourRecommend() {
-        List<Tour> tours = tourRepository.findTop6ByOrderByTotalViewDesc();
+        List<Tour> tours = tourRepository.findTop5ByOrderByTotalViewDesc();
         return tours.stream().map(tourMapper::toDto).collect(Collectors.toList());
     }
 

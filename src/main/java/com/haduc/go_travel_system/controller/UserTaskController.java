@@ -58,4 +58,9 @@ public class UserTaskController {
         List<UserTaskResponse> response = userTaskService.getTasksByEmailOrPhone(email, phone);
         return ApiResponse.<List<UserTaskResponse>>builder().code(200).message("get user task by phone or email success!!").data(response).build();
     }
+
+    @GetMapping("/get-task-status-statistics")
+    public ApiResponse getTaskStatusStatistics() {
+        return ApiResponse.builder().code(200).message("get task status statistics success!!").data(userTaskService.getTaskStatusStatistics()).build();
+    }
 }

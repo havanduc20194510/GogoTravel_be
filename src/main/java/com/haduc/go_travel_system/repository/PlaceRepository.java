@@ -15,5 +15,5 @@ import java.util.List;
 public interface PlaceRepository extends JpaRepository<Place, Long>, PagingAndSortingRepository<Place,Long> {
     Page<Place> findAll(Pageable pageable);
     Page<Place> findAll(Specification<Place> spec, Pageable pageable);
-    List<Place> findTop5ByOrderByTotalViewDesc();
+    List<Place> findTop6ByOrderByTotalViewDesc();
 }

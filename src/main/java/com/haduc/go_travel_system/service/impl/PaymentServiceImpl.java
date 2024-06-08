@@ -211,7 +211,7 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Override
     public List<PaymentResponse> getPaymentByUserId(String userId) {
-        List<Payment> payments = paymentRepository.findByBookingUserId(userId);
+        List<Payment> payments = paymentRepository.findByBookingUserIdOrderByPayDateDesc(userId);
         List<PaymentResponse> paymentResponses = payments.stream().map(paymentMapper::toDto).toList();
         //add bookingId to paymentResponses
         payments.forEach(payment -> paymentResponses.forEach(paymentResponse -> {

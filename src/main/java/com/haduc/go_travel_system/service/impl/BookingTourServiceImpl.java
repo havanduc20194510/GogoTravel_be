@@ -3,6 +3,7 @@ package com.haduc.go_travel_system.service.impl;
 import com.haduc.go_travel_system.dto.request.BookingRequest;
 import com.haduc.go_travel_system.dto.request.UpdateBookingRequest;
 import com.haduc.go_travel_system.dto.response.BookingResponse;
+import com.haduc.go_travel_system.dto.response.StatisticResponse;
 import com.haduc.go_travel_system.entity.BookingTour;
 import com.haduc.go_travel_system.entity.DepartureTime;
 import com.haduc.go_travel_system.entity.Tour;
@@ -20,8 +21,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 @Service
@@ -126,7 +129,7 @@ public class BookingTourServiceImpl implements BookingTourService {
 
     @Override
     public List<BookingResponse> getBookingTourByUserId(String userId) {
-        List<BookingTour> bookingTours = bookingTourRepository.findByUserIdOrderByBookingDate(userId);
+        List<BookingTour> bookingTours = bookingTourRepository.findByUserIdOrderByBookingDateDesc(userId);
         return bookingTours.stream().map(bookingTourMapper::toDto).toList();
     }
 
@@ -161,4 +164,24 @@ public class BookingTourServiceImpl implements BookingTourService {
                 .orElseThrow(() -> new AppException(ErrorCode.TOUR_NOT_FOUND));
         return tour.getAdultPrice() * numberOfAdults + tour.getChildPrice() * numberOfChildren + tour.getBabyPrice() * numberOfBabies;
     }
+
+    @Override
+    public StatisticResponse getTotalGuestsByMonth() {
+        LocalDate now = LocalDate.now();
+        int year = now.getYear();
+        int month = now.getMonthValue();
+        List<String> labels = new ArrayList<>();
+        List<Long> data = new ArrayList<>();
+
+        List<Object[]> results = bookingTourRepository.getTotalGuestsByMonth(BookingStatus.CONFIRMED, year, month);
+        for (Object[] result : results) {
+            Integer monthResult = (Integer) result[0];
+            Long totalGuests = (Long) result[1];
+            labels.add(monthResult.toString());
+            data.add(totalGuests);
+        }
+        return new StatisticResponse(labels, data);
+    }
+
+
 }

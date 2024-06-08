@@ -3,6 +3,7 @@ package com.haduc.go_travel_system.service;
 import com.haduc.go_travel_system.dto.request.CreateTaskRequest;
 import com.haduc.go_travel_system.dto.request.UpdateTaskRequest;
 import com.haduc.go_travel_system.dto.request.UserTaskRequest;
+import com.haduc.go_travel_system.dto.response.StatisticResponse;
 import com.haduc.go_travel_system.dto.response.UserTaskResponse;
 import com.haduc.go_travel_system.mapper.UserTaskMapper;
 
@@ -28,5 +29,7 @@ public interface UserTaskService {
     String verifyTask(String userTaskId);
 
     List<UserTaskResponse> getTasksByEmailOrPhone(String email, String phone);
+
+    StatisticResponse getTaskStatusStatistics();
 
 }

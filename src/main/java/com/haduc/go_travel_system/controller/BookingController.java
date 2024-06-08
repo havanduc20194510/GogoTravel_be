@@ -4,6 +4,7 @@ import com.haduc.go_travel_system.dto.request.BookingRequest;
 import com.haduc.go_travel_system.dto.request.UpdateBookingRequest;
 import com.haduc.go_travel_system.dto.response.ApiResponse;
 import com.haduc.go_travel_system.dto.response.BookingResponse;
+import com.haduc.go_travel_system.dto.response.StatisticResponse;
 import com.haduc.go_travel_system.service.BookingTourService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
@@ -123,6 +124,15 @@ public class BookingController {
         return ApiResponse.<Double>builder()
                 .message("Get total booking tour successfully")
                 .data(total)
+                .build();
+    }
+
+    @GetMapping("/get-total-guests")
+    public ApiResponse<StatisticResponse> getTotalGuestsByMonth() {
+        StatisticResponse totalGuests = bookingTourService.getTotalGuestsByMonth();
+        return ApiResponse.<StatisticResponse>builder()
+                .message("Get total guests by month successfully")
+                .data(totalGuests)
                 .build();
     }
 

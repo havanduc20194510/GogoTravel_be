@@ -27,7 +27,6 @@ public class Tour {
     private String departureLocation;
     private String vehicle;
     private Double hotelStar;
-    private Double rating;
     @Enumerated(EnumType.STRING)
     private TourStatus status;
     private String note;

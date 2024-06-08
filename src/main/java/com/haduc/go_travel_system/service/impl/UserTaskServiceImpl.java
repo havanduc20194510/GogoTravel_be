@@ -1,6 +1,7 @@
 package com.haduc.go_travel_system.service.impl;
 
 import com.haduc.go_travel_system.dto.request.UserTaskRequest;
+import com.haduc.go_travel_system.dto.response.StatisticResponse;
 import com.haduc.go_travel_system.dto.response.UserTaskResponse;
 import com.haduc.go_travel_system.entity.User;
 import com.haduc.go_travel_system.entity.UserTask;
@@ -15,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -110,5 +112,21 @@ public class UserTaskServiceImpl implements UserTaskService {
             userTasks = userTaskRepository.findByPhoneOrEmail(phone, email);
         }
         return userTasks.stream().map(userTaskMapper::toUserTaskResponse).toList();
+    }
+
+    @Override
+    public StatisticResponse getTaskStatusStatistics() {
+        List<Object[]> results = userTaskRepository.countTasksByStatus();
+        List<String> labels = new ArrayList<>();
+        List<Long> data = new ArrayList<>();
+
+        for (Object[] result : results) {
+            TaskStatus status = (TaskStatus) result[0];
+            Long count = (Long) result[1];
+            labels.add(status.name());
+            data.add(count);
+        }
+
+        return new StatisticResponse(labels, data);
     }
 }
